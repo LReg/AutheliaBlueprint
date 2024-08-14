@@ -4,7 +4,7 @@ It is fully configurable in the .env file, which should take about 15 minutes.
 
 Currently, it only works via. a .env file, but im planning to make it configurable via envvars for better pipline usage.
 
-It has a go backend and an angular frontend.
+It has a go backend and an angular frontend. The Reverse Proxy is Traefik.
 The backend is protected by Authelia and the frontend is protected by the backend.
 As DB mongodb is configured.
 
@@ -74,7 +74,7 @@ Maybe you already have a treafik instance running, then you can delete it from t
 - TRAEFIK_EMAIL=YourEmail@gmail.com
  
 ### Authelia
-- AUTHELIA_RESET_PASSWORD_SECRET=super-secret-password : **generate secret**
+- AUTHELIA_RESET_PASSWORD_SECRET=super-secret-password : **generate secret** 
 - AUTHELIA_SESSION_REDIS_PASSWORD=redis-password : **generate secret**
 - AUTHELIA_SESSION_SECRET=super-secret-session : **generate secret**
  

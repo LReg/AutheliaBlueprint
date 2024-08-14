@@ -14,7 +14,7 @@ totp:
 
 identity_validation:
   reset_password:
-    jwt_secret: $AUTHELIA_RESET_PASSWORD_SECRET # Changeme
+    jwt_secret: '$AUTHELIA_RESET_PASSWORD_SECRET' # Changeme
 
 authentication_backend:
   ldap:
@@ -50,7 +50,7 @@ access_control:
 
 identity_providers:
   oidc:
-    hmac_secret: $OIDC_HMAC_SECRET
+    hmac_secret: '$OIDC_HMAC_SECRET'
     jwks:
       - algorithm: 'RS256'
         key: {{ secret "/config/secrets/oidc/jwks/rsa.4096.key" | mindent 10 "|" | msquote }}
@@ -71,7 +71,7 @@ identity_providers:
       id_token: '1h'
       refresh_token: '90m'
     clients:
-      - client_id: $OIDC_CLIENT_ID
+      - client_id: '$OIDC_CLIENT_ID'
         client_name: '$OIDC_CLIENT_NAME'
         public: true
         client_secret: null
