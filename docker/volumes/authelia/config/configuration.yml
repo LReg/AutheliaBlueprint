@@ -1,0 +1,130 @@
+---
+###############################################################
+#                   Authelia configuration                    #
+###############################################################
+
+server:
+  address: 'tcp://:9091'
+
+log:
+  level: 'debug'
+
+totp:
+  issuer: 'authelia.com'
+
+identity_validation:
+  reset_password:
+    jwt_secret: $AUTHELIA_RESET_PASSWORD_SECRET # Changeme
+
+authentication_backend:
+  ldap:
+    address: 'ldap://authelia-lldap:3890'
+    implementation: 'custom'
+    timeout: '5s'
+    start_tls: false
+    base_dn: 'dc=$LLDAP_PURE_DOMAIN,DC=$LLDAP_DC'
+    additional_users_dn: 'OU=people'
+    # To allow sign in both with username and email, one can use a filter like
+    # (&(|({username_attribute}={input})({mail_attribute}={input}))(objectClass=person))
+    users_filter: '(&({username_attribute}={input})(objectClass=person))'
+    additional_groups_dn: 'OU=groups'
+    groups_filter: '(member={dn})'
+    # The username and password of the admin or service user.
+    user: 'UID=$LLDAP_USERNAME,OU=people,DC=$LLDAP_PURE_DOMAIN,DC=$LLDAP_DC'
+    password: '$LLDAP_PASSWORD'
+    attributes:
+      distinguished_name: 'distinguishedName'
+      username: 'uid'
+      mail: 'mail'
+      member_of: 'memberOf'
+      group_name: 'cn'
+
+access_control:
+  default_policy: 'deny'
+  rules:
+    - domain: '$APP_DOMAIN'
+      policy: 'one_factor'
+    - domain: '$AUTH_DOMAIN'
+      policy: 'bypass'
+
+
+identity_providers:
+  oidc:
+    hmac_secret: $OIDC_HMAC_SECRET
+    jwks:
+      - algorithm: 'RS256'
+        key: {{ secret "/config/secrets/oidc/jwks/rsa.4096.key" | mindent 10 "|" | msquote }}
+    cors:
+      endpoints:
+        - authorization
+        - token
+        - revocation
+        - introspection
+        - userinfo
+      allowed_origins:
+        - https://$APP_DOMAIN
+        - $OIDC_LOCALHOST_ORIGIN
+      allowed_origins_from_client_redirect_uris: false
+    lifespans:
+      access_token: '1h'
+      authorize_code: '1m'
+      id_token: '1h'
+      refresh_token: '90m'
+    clients:
+      - client_id: $OIDC_CLIENT_ID
+        client_name: '$OIDC_CLIENT_NAME'
+        public: true
+        client_secret: null
+        consent_mode: 'auto'
+        authorization_policy: 'one_factor'
+        redirect_uris:
+          - '$OIDC_CALLBACK_URL'
+          - '$OIDC_LOCALHOST_CALLBACK'
+        scopes:
+          - 'openid'
+          - 'profile'
+          - 'email'
+          - 'offline_access'
+
+session:
+  secret: '$AUTHELIA_SESSION_SECRET'
+
+  cookies:
+    - name: 'authelia_session'
+      domain: '$ROOT_DOMAIN'  # Should match whatever your root protected domain is
+      authelia_url: 'https://$AUTH_DOMAIN'
+      expiration: '1 hour'
+      inactivity: '1 hour'
+
+  redis:
+    host: 'redis'
+    port: 6379
+    password: '$AUTHELIA_SESSION_REDIS_PASSWORD'
+
+regulation:
+  max_retries: 3
+  find_time: '2 minutes'
+  ban_time: '5 minutes'
+
+storage:
+  encryption_key: '$POSTGRES_ENCRYPTION_KEY'
+  postgres:
+    address: 'tcp://authelia-postgres:5432'
+    schema: 'public'
+    username: 'authelia'
+    database: 'authelia'
+    password: '$POSTGRES_PASSWORD'
+
+notifier:
+  disable_startup_check: false
+  smtp:
+    username: '$SMTP_USERNAME'
+    password: '$SMTP_PASSWORD'
+    address: '$SMTP_HOST'
+    sender: '$SMTP_SENDER'
+    disable_require_tls: $SMTP_DISABLE_REQUIRE_TLS
+    disable_starttls: $SMTP_DISABLE_STARTTLS
+    disable_html_emails: false
+    tls:
+      skip_verify: $SMTP_SKIP_TLS_VERIFY
+...

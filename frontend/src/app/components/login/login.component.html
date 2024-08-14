@@ -1,0 +1,10 @@
+<div>
+  <div *ngIf="!(authService.loggedIn | async)">
+    <button (click)="authService.login()">Login</button>
+  </div>
+  <div *ngIf="authService.loggedIn | async">
+    <h1>Welcome!</h1>
+    <a routerLink="/">Profile</a>
+    <button (click)="authService.logout()">Logout</button>
+  </div>
+</div>
