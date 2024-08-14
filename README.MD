@@ -10,6 +10,11 @@ As DB mongodb is configured.
 
 Everything is dockerized
 # Setup
+## First startup
+Important to note:
+On the first startup the lldap user that authelia will want to use will not exsist.
+So you will need to login to lldap on you lldap.youdomain.com (LLDAP_DOMAIN) and login with admin:password and then create the user you defined in your .env File.
+The user should have the groupl ldap_password_manager. And of course change the admin password. For futher information look into the [lldap Repo](https://github.com/lldap/lldap), very good project.
 ## Setup on server
 ``` sh
 git clone project
