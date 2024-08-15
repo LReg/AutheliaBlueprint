@@ -96,8 +96,8 @@ Maybe you already have a treafik instance running, then you can delete it from t
 - POSTGRES_ENCRYPTION_KEY=super-secret-encryption-key : **generate secret**
  
  ### OIDC
-- OIDC_HMAC_SECRET='super-secret-hmac' : **generate secret**
-- OIDC_CLIENT_ID='your-client-id'
+- OIDC_HMAC_SECRET=super-secret-hmac : **generate secret**
+- OIDC_CLIENT_ID=your-client-id
 - OIDC_CLIENT_NAME=your-client-name
 - OIDC_CALLBACK_URL=https://app.yourdomain.com/callback : the callback url you define in the frontend
 - OIDC_LOCALHOST_CALLBACK=http://localhost:4200/callback
@@ -119,6 +119,7 @@ Maybe you already have a treafik instance running, then you can delete it from t
 - SMTP_PASSWORD=password : **generate secret**
 - SMTP_HOST=smtp://smtp.gmail.com:587
 - SMTP_SENDER=mail@app.de
+
 In case you selfhost your mailserver there might be some problems with the certs. Then you can experiment with these values.
 - SMTP_DISABLE_REQUIRE_TLS=false
 - SMTP_DISABLE_STARTTLS=false
