@@ -11,10 +11,8 @@ if [[ ! -f "$ENV_FILE" ]]; then
     exit 1
 fi
 
-chmod +x ./reset.sh
-
 chmod +x ./docker/scripts/changeEnvVars.sh
-./docker/scripts/changeEnvVars.sh "$ENV_FILE" "./docker/scripts/local-mongo-init.js"
+./docker/scripts/changeEnvVars.sh "$ENV_FILE" "./docker/scripts/mongo-init.template.js" "./docker/scripts/mongo-init.js"
 
 
 

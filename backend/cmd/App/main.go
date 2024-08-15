@@ -23,18 +23,20 @@ func main() {
 	ensureMongoDbConnection(client)
 
 	app := createFiberApp()
-
-	app.Use(cors.New())
-	app.Use(logger.New())
-	app.Use(middleware.DBClientLocalMiddleware(client))
-	app.Use(middleware.OIDCAuthMiddleware())
-
+	registerMiddleware(app, client)
 	registerFiberGroups(app)
 
 	err = app.Listen(":8080")
 	if err != nil {
 		log.Fatal(err)
 	}
+}
+
+func registerMiddleware(app *fiber.App, client *mongo.Client) {
+	app.Use(cors.New())
+	app.Use(logger.New())
+	app.Use(middleware.DBClientLocalMiddleware(client))
+	app.Use(middleware.OIDCAuthMiddleware())
 }
 
 func registerFiberGroups(app *fiber.App) {
@@ -50,7 +52,7 @@ func createMongoClient() (*mongo.Client, error) {
 func createFiberApp() *fiber.App {
 	log.SetLevel(log.LevelDebug)
 	return fiber.New(fiber.Config{
-		Prefork:           true,
+		Prefork:           false,
 		CaseSensitive:     false,
 		StrictRouting:     false,
 		ServerHeader:      "Fiber",
