@@ -61,7 +61,7 @@ This can be done by calling the reset.sh script.
 It is necessary to call it with sudo, because authelia changes permissions to the file.
 ```sudo ./reset.sh``` 
 
-# Environment Variables
+# Configuration in .env file
 There will be some secrets that you need to generate and copy to the .env file.
 Here is a helper page from authelia you can use https://www.authelia.com/reference/guides/generating-secure-values/#generating-a-random-alphanumeric-string
 ### General
