@@ -9,6 +9,11 @@ The backend is protected by Authelia and the frontend is protected by the backen
 As DB mongodb is configured.
 
 Everything is dockerized
+
+### Roadmap
+- [] dont write dirctly in the template file
+- [] make use of environmentvariables in addtion to .env file
+
 # Setup
 ## First startup
 Important to note:
