@@ -11,8 +11,8 @@ As DB mongodb is configured.
 Everything is dockerized
 
 ### Roadmap
-- [] dont write dirctly in the template file
-- [] make use of environmentvariables in addtion to .env file
+- [ ] dont write dirctly in the template file
+- [ ] make use of environmentvariables in addtion to .env file
 
 # Setup
 ## First startup
