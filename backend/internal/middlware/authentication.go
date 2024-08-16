@@ -18,25 +18,19 @@ func OIDCAuthMiddleware() fiber.Handler {
 	return func(c *fiber.Ctx) error {
 		authHeader := c.Get("Authorization")
 		if authHeader == "" {
-			return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
-				"error": "Authorization header missing",
-			})
+			return helper.SendUnauthorized(c, errors.New("missing Authorization header"))
 		}
 
 		// Extract the token from the Authorization header
 		token := strings.TrimPrefix(authHeader, "Bearer ")
 		if token == authHeader { // No "Bearer " prefix found
-			return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
-				"error": "Invalid Authorization header format",
-			})
+			return helper.SendUnauthorized(c, errors.New("invalid Authorization header"))
 		}
 
 		// Fetch userinfo from Authelia userinfo endpoint
 		user, err := fetchUserInfo(userinfoEndpoint, token)
 		if err != nil {
-			return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
-				"error": err.Error(),
-			})
+			return helper.SendUnauthorized(c, err)
 		}
 
 		// Store relevant user information in Locals
@@ -44,7 +38,7 @@ func OIDCAuthMiddleware() fiber.Handler {
 
 		err = storeUserInDB(c, user)
 		if err != nil {
-			return err
+			return helper.SendInternalServerError(c, err)
 		}
 
 		// Proceed to the next handler
