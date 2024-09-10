@@ -37,7 +37,7 @@ services:
       - 3890
     labels:
       - 'traefik.enable=true'
-      - 'traefik.http.routers.${APP_NAME}-router-lldap.rule=Host(`${LLDAP_SUBDOMAIN}.${DOMAIN}.${DOMAIN_ENDING}`)'
+      - 'traefik.http.routers.${APP_NAME}-router-lldap.rule=Host(`${LDAP_SUBDOMAIN}.${DOMAIN}.${DOMAIN_ENDING}`)'
       - 'traefik.http.routers.${APP_NAME}-router-lldap.entrypoints=${TRAEFIK_ENTRYPOINT}'
       - 'traefik.http.routers.${APP_NAME}-router-lldap.tls=true'
       - 'traefik.http.routers.${APP_NAME}-router-lldap.tls.certresolver=${TRAEFIK_CERT_RESOLVER}'
