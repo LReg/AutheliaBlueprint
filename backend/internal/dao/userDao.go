@@ -9,17 +9,17 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-func UpsertUser(col *mongo.Collection, user *types.User) (*mongo.UpdateResult, error) {
+func UpsertUser(col *mongo.Database, user *types.User) (*mongo.UpdateResult, error) {
 	opt := options.Update().SetUpsert(true)
 
-	res, err := col.UpdateOne(
+	res, err := col.Collection("user").UpdateOne(
 		context.Background(),
 		bson.M{"email": user.Email},
 		bson.M{
 			"$set": bson.M{
-				"email":          user.Email,
-				"name":           user.Name,
-				"uniqueUserName": user.UniqueUserName,
+				"email":             user.Email,
+				"name":              user.Name,
+				"preferredUsername": user.PreferredUsername,
 			},
 		},
 		opt,
@@ -31,10 +31,23 @@ func UpsertUser(col *mongo.Collection, user *types.User) (*mongo.UpdateResult, e
 	return res, nil
 }
 
-func SetUserRole(col *mongo.Collection, uniqueUserName string, role types.Role) (*mongo.UpdateResult, error) {
-	res, err := col.UpdateOne(
+func GetUserRole(col *mongo.Database, preferredUsername string) (types.Role, error) {
+	var user types.User
+	err := col.Collection("user").FindOne(
 		context.Background(),
-		bson.M{"uniqueUserName": uniqueUserName},
+		bson.M{"preferredUsername": preferredUsername},
+	).Decode(&user)
+
+	if err != nil {
+		return types.NoRole, err
+	}
+	return user.Role, nil
+}
+
+func SetUserRole(col *mongo.Database, preferredUsername string, role types.Role) (*mongo.UpdateResult, error) {
+	res, err := col.Collection("user").UpdateOne(
+		context.Background(),
+		bson.M{"preferredUsername": preferredUsername},
 		bson.M{
 			"$set": bson.M{
 				"role": role,
@@ -48,8 +61,8 @@ func SetUserRole(col *mongo.Collection, uniqueUserName string, role types.Role) 
 	return res, nil
 }
 
-func GetAllUsers(col *mongo.Collection) ([]types.User, error) {
-	cursor, err := col.Find(context.Background(), bson.M{})
+func GetAllUsers(col *mongo.Database) ([]types.User, error) {
+	cursor, err := col.Collection("user").Find(context.Background(), bson.M{})
 
 	if err != nil {
 		log.Error("Error while fetching users: ", err)

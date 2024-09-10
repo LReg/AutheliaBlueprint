@@ -1,15 +1,16 @@
 package types
 
 var (
-	RoleAdmin = "admin"
-	RoleUser  = "user"
+	RoleAdmin Role = "admin"
+	RoleUser  Role = "user"
+	NoRole    Role = ""
 )
 
 type Role string
 
 type User struct {
-	Email          string `json:"email"`
-	Name           string `json:"name"`
-	UniqueUserName string `json:"preferred_username"`
-	Role           Role
+	Email             string `json:"email"`
+	Name              string `json:"name"`
+	PreferredUsername string `json:"preferred_username"`
+	Role              Role   `json:"role"`
 }

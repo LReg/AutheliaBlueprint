@@ -14,8 +14,8 @@ func CurrentUser(f *fiber.Ctx) error {
 }
 
 func GetAllUsers(f *fiber.Ctx) error {
-	col := f.Locals("db").(*mongo.Database).Collection("users")
-	users, err := dao.GetAllUsers(col)
+	db := f.Locals("db").(*mongo.Database)
+	users, err := dao.GetAllUsers(db)
 	if err != nil {
 		return helper.SendInternalServerError(f, err)
 	}

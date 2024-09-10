@@ -33,13 +33,13 @@ func OIDCAuthMiddleware() fiber.Handler {
 			return helper.SendUnauthorized(c, err)
 		}
 
-		// Store relevant user information in Locals
-		c.Locals("user", user)
-
 		err = storeUserInDB(c, user)
 		if err != nil {
-			return helper.SendInternalServerError(c, err)
+			return err
 		}
+
+		// Store relevant user information in Locals
+		c.Locals("user", user)
 
 		// Proceed to the next handler
 		return c.Next()
@@ -47,13 +47,36 @@ func OIDCAuthMiddleware() fiber.Handler {
 }
 
 func storeUserInDB(c *fiber.Ctx, user *types.User) error {
-	userCol := c.Locals("db").(*mongo.Database).Collection("users")
+	db := c.Locals("db").(*mongo.Database)
 
-	_, err := dao.UpsertUser(userCol, user)
+	_, err := dao.UpsertUser(db, user)
 	if err != nil {
 		return err
 	}
+
+	role, err := setRoleToUserIfNotSet(err, db, user)
+	if err != nil {
+		return err
+	}
+	user.Role = role
+
 	return nil
+}
+
+func setRoleToUserIfNotSet(err error, db *mongo.Database, user *types.User) (types.Role, error) {
+	role, err := dao.GetUserRole(db, user.PreferredUsername)
+	if err != nil {
+		return types.NoRole, err
+	}
+
+	if role == types.NoRole {
+		_, err = dao.SetUserRole(db, user.PreferredUsername, types.RoleUser)
+		if err != nil {
+			return types.NoRole, err
+		}
+	}
+	role = types.RoleUser
+	return role, nil
 }
 
 // fetchUserInfo fetches the userinfo from Authelia using the provided token
