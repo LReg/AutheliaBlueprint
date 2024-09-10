@@ -22,7 +22,7 @@ authentication_backend:
     implementation: 'custom'
     timeout: '5s'
     start_tls: false
-    base_dn: 'dc=$DOMAIN,DC=$DOMAIN_ENDING'
+    base_dn: 'dc=$DOMAIN,DC=$D_ENDING'
     additional_users_dn: 'OU=people'
     # To allow sign in both with username and email, one can use a filter like
     # (&(|({username_attribute}={input})({mail_attribute}={input}))(objectClass=person))
@@ -30,7 +30,7 @@ authentication_backend:
     additional_groups_dn: 'OU=groups'
     groups_filter: '(member={dn})'
     # The username and password of the admin or service user.
-    user: 'UID=$LLDAP_USERNAME,OU=people,DC=$DOMAIN,DC=$DOMAIN_ENDING'
+    user: 'UID=$LLDAP_USERNAME,OU=people,DC=$DOMAIN,DC=$D_ENDING'
     password: '$LLDAP_PASSWORD'
     attributes:
       distinguished_name: 'distinguishedName'
@@ -42,9 +42,9 @@ authentication_backend:
 access_control:
   default_policy: 'deny'
   rules:
-    - domain: '$APP_SUBDOMAIN.$DOMAIN.$DOMAIN_ENDING'
+    - domain: '$APP_SUBDOMAIN.$DOMAIN.$D_ENDING'
       policy: 'one_factor'
-    - domain: '$AUTH_SUBDOMAIN.$DOMAIN.$DOMAIN_ENDING'
+    - domain: '$AUTH_SUBDOMAIN.$DOMAIN.$D_ENDING'
       policy: 'bypass'
 
 
@@ -62,7 +62,7 @@ identity_providers:
         - introspection
         - userinfo
       allowed_origins:
-        - https://$APP_SUBDOMAIN.$DOMAIN.$DOMAIN_ENDING
+        - https://$APP_SUBDOMAIN.$DOMAIN.$D_ENDING
         - https://localhost:4200
       allowed_origins_from_client_redirect_uris: false
     lifespans:
@@ -78,7 +78,7 @@ identity_providers:
         consent_mode: 'auto'
         authorization_policy: 'one_factor'
         redirect_uris:
-          - 'https://$APP_SUBDOMAIN.$DOMAIN.$DOMAIN_ENDING/$CALLBACK_PATH'
+          - 'https://$APP_SUBDOMAIN.$DOMAIN.$D_ENDING/$CALLBACK_PATH'
           - 'http://localhost4200/$CALLBACK_PATH'
         scopes:
           - 'openid'
@@ -91,8 +91,8 @@ session:
 
   cookies:
     - name: 'authelia_session'
-      domain: '$DOMAIN.$DOMAIN_ENDING'  # Should match whatever your root protected domain is
-      authelia_url: 'https://$AUTH_SUBDOMAIN.$DOMAIN.$DOMAIN_ENDING'
+      domain: '$DOMAIN.$D_ENDING'  # Should match whatever your root protected domain is
+      authelia_url: 'https://$AUTH_SUBDOMAIN.$DOMAIN.$D_ENDING'
       expiration: '1 hour'
       inactivity: '1 hour'
 

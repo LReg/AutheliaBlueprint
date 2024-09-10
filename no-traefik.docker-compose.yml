@@ -10,11 +10,11 @@ services:
       - TraefikNetwork
     labels:
       - 'traefik.enable=true'
-      - 'traefik.http.routers.${APP_NAME}-router-authelia.rule=Host(`${AUTH_SUBDOMAIN}.${DOMAIN}.${DOMAIN_ENDING}`)'
+      - 'traefik.http.routers.${APP_NAME}-router-authelia.rule=Host(`${AUTH_SUBDOMAIN}.${DOMAIN}.${D_ENDING}`)'
       - 'traefik.http.routers.${APP_NAME}-router-authelia.entrypoints=${TRAEFIK_ENTRYPOINT}'
       - 'traefik.http.routers.${APP_NAME}-router-authelia.tls=true'
       - 'traefik.http.routers.${APP_NAME}-router-authelia.tls.certresolver=${TRAEFIK_CERT_RESOLVER}'
-      - 'traefik.http.middlewares.authelia.forwardauth.address=http://authelia:9091/api/verify?rd=https://${AUTH_SUBDOMAIN}.${DOMAIN}.${DOMAIN_ENDING}'
+      - 'traefik.http.middlewares.authelia.forwardauth.address=http://authelia:9091/api/verify?rd=https://${AUTH_SUBDOMAIN}.${DOMAIN}.${D_ENDING}'
       - 'traefik.http.middlewares.authelia.forwardauth.trustForwardHeader=true'
       - 'traefik.http.middlewares.authelia.forwardauth.authResponseHeaders=Remote-User,Remote-Groups,Remote-Name,Remote-Email'
     expose:
@@ -37,7 +37,7 @@ services:
       - 3890
     labels:
       - 'traefik.enable=true'
-      - 'traefik.http.routers.${APP_NAME}-router-lldap.rule=Host(`${LDAP_SUBDOMAIN}.${DOMAIN}.${DOMAIN_ENDING}`)'
+      - 'traefik.http.routers.${APP_NAME}-router-lldap.rule=Host(`${LDAP_SUBDOMAIN}.${DOMAIN}.${D_ENDING}`)'
       - 'traefik.http.routers.${APP_NAME}-router-lldap.entrypoints=${TRAEFIK_ENTRYPOINT}'
       - 'traefik.http.routers.${APP_NAME}-router-lldap.tls=true'
       - 'traefik.http.routers.${APP_NAME}-router-lldap.tls.certresolver=${TRAEFIK_CERT_RESOLVER}'
@@ -47,7 +47,7 @@ services:
     environment:
       - "LLDAP_JWT_SECRET=${LLDAP_JWT_SECRET}"
       - "LLDAP_KEY_SEED=${LLDAP_KEY_SEED}"
-      - "LLDAP_LDAP_BASE_DN=dc=${DOMAIN},dc=${DOMAIN_ENDING}"
+      - "LLDAP_LDAP_BASE_DN=dc=${DOMAIN},dc=${D_ENDING}"
 
   authelia-postgres:
     image: postgres
@@ -88,14 +88,14 @@ services:
       context: ./backend
       dockerfile: Dockerfile
     environment:
-      - AUTH_DOMAIN=${AUTH_SUBDOMAIN}.${DOMAIN}.${DOMAIN_ENDING}
+      - AUTH_DOMAIN=${AUTH_SUBDOMAIN}.${DOMAIN}.${D_ENDING}
       - OIDC_CLIENT_ID=${OIDC_CLIENT_ID}
       - MONGO_URI=mongodb://${DB_USERNAME}:${DB_PASSWORD}@mongodb:27017/public?authSource=public
     networks:
       - TraefikNetwork
     labels:
       - 'traefik.enable=true'
-      - 'traefik.http.routers.${APP_NAME}-backend.rule=Host(`${APP_SUBDOMAIN}.${DOMAIN}.${DOMAIN_ENDING}`) && PathPrefix(`/api`)'
+      - 'traefik.http.routers.${APP_NAME}-backend.rule=Host(`${APP_SUBDOMAIN}.${DOMAIN}.${D_ENDING}`) && PathPrefix(`/api`)'
       - 'traefik.http.routers.${APP_NAME}-backend.entrypoints=${TRAEFIK_ENTRYPOINT}'
       - 'traefik.http.routers.${APP_NAME}-backend.tls=true'
       - 'traefik.http.routers.${APP_NAME}-backend.tls.certresolver=${TRAEFIK_CERT_RESOLVER}'
@@ -127,15 +127,15 @@ services:
       context: ./frontend
       dockerfile: Dockerfile
       args:
-        - BASE_URL=https://${APP_SUBDOMAIN}.${DOMAIN}.${DOMAIN_ENDING}
-        - API_URL=https://${APP_SUBDOMAIN}.${DOMAIN}.${DOMAIN_ENDING}/api
-        - AUTH_URL=https://${AUTH_SUBDOMAIN}.${DOMAIN}.${DOMAIN_ENDING}
+        - BASE_URL=https://${APP_SUBDOMAIN}.${DOMAIN}.${D_ENDING}
+        - API_URL=https://${APP_SUBDOMAIN}.${DOMAIN}.${D_ENDING}/api
+        - AUTH_URL=https://${AUTH_SUBDOMAIN}.${DOMAIN}.${D_ENDING}
         - CLIENT_ID=${OIDC_CLIENT_ID}
     networks:
       - TraefikNetwork
     labels:
       - 'traefik.enable=true'
-      - 'traefik.http.routers.${APP_NAME}-frontend.rule=Host(`${APP_SUBDOMAIN}.${DOMAIN}.${DOMAIN_ENDING}`)'
+      - 'traefik.http.routers.${APP_NAME}-frontend.rule=Host(`${APP_SUBDOMAIN}.${DOMAIN}.${D_ENDING}`)'
       - 'traefik.http.routers.${APP_NAME}-frontend.entrypoints=${TRAEFIK_ENTRYPOINT}'
       - 'traefik.http.routers.${APP_NAME}-frontend.tls=true'
       - 'traefik.http.routers.${APP_NAME}-frontend.tls.certresolver=${TRAEFIK_CERT_RESOLVER}'
