@@ -65,7 +65,7 @@ jobs:
           script: |
             cd AutheliaBlueprint 
             git pull
-            echo "${{ secrets.KEY }}" | sudo -S -E ./setup.sh 
+            echo "${{ secrets.KEY }}" | sudo -S -E ./setup.sh server
             docker compose -f no-traefik.docker-compose.yml build
             docker compose -f no-traefik.docker-compose.yml  down
             docker compose -f no-traefik.docker-compose.yml  up -d --force-recreate

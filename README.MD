@@ -11,39 +11,36 @@ As DB mongodb is configured.
 Everything is dockerized.
 
 # Setup
-## First startup
-Important to note:
-On the first startup the lldap user that authelia will want to use will not exsist. This will lead to the authelia container to be unhealthy and restarting.
+## General Idea
+Everything should be configurable in the .env file OR in the environment variables. The environment variables will overwrite the .env file.
 
-So you will need to login to lldap on you lldap.youdomain.com (LLDAP_DOMAIN) and login with admin:password and then create the user you defined in your .env File.
+Authelia and the database need config file and startup script. They are written with placeholders. The setup.sh script will replace them with the values from the .env file.
 
-The user should have the group ldap_password_manager. And of course change the admin password. For futher information look into the [lldap Repo](https://github.com/lldap/lldap), very good project.
-## Setup on server
+After executing the setup.sh script you can consider all values in your .env and envvars to be set as "global config".
+
+The setup needs to be done before the build because the frontend needs values at buildtime.
+
+You can think of your .env and envvars as a global config, which will be used in diffrent places:
+docker-compose file, authelia config, database startup script, frontend build, backend envvars.
+
+The idea of the local setup will be to only have the frontend, backend and db running locally and to use the remote authelia.
+## Setup.sh
+The setup.sh script is used to generate secrets and to replace placeholders in the authelia configuration file and the database startup script.
+You will need to work on you .env file anyway tho.
+Usage: 
 ``` sh
-git clone project
-cd project
-cp .env.example .env # update accordingly or write envvars via pipeline or so
 chmod +x ./setup.sh
-./setup.sh
-docker run -u "$(id -u):$(id -g)" -v "$(pwd)":/keys authelia/authelia:latest authelia crypto pair rsa generate --bits 4096 --directory /keys
-copy the content of the private.pem key to `docker/volumes/authelia/config/secrets/oidc/jwks/rsa.4096.key`
-docker compose up -d
+#        server or local | generateSecrets is optional 
+./setup.sh <server|local> [generateSecrets]
 ```
-### Traefik is already configured what should I do?
-If you already have traefik running and blocking your ports you can user the no-traefik.docker-compose.yml.
-````bash
-docker compose -f no-traefik.docker-compose.yml up -d
-````
-You have to put in the correct valuees in the .env file for Entrypoint, Network and Certresolver.
-### Pipeline usage
-In the folder .github/workflows there is a github Actions pipeline predefined. It leverages the Action secrets to pull alle configuration values.
-Before the first running of the pipeline you need to:
-- create a user on your server
-- give the user access to: docker, (sudo), ssh -> sudo see pitfalls with setup.sh
-- clone the repository on the server
-- cp the .env file from .env.example (values will be overwritten anyway but the keys are needed)
-- give the ./setup.sh script execution rights
-- generate the rsa key with the command above and copy the content of the private.pem to the rsa.4096.key file
+
+In more detail the setup script does the following:
+- copies either the .env.example or the .env.local file to the .env file
+- copies the authelia template configuration file
+- generates secrets for the .env file (optional on generate secrets)
+- generates a rsa key for the authelia configuration (optional on generate secrets)
+- replaces the placeholders in the authelia configuration with the values from the .env file
+- replaces the placeholders in the database startup script with the values from the .env file
 ### Pitfalls with setup.sh
 The setup.sh takes the authelia config template and replaces the placeholders with the values from the .env file.
 
@@ -53,15 +50,54 @@ Maybe I will find a better solution for this in the future.
 If you are not planning on changing any of the configuration values anymore,
 you can also extract the setup.sh script to another pipeline and remove it from the main deploy pipeline.
 Tho it is important to still have the env vars because they are read in the docker-compose file.
+## First startup
+Important to note:
+On the first startup the lldap user that authelia will want to use will not exist. This will lead to the authelia container to be unhealthy and restarting.
+
+So you will need to login to lldap on you lldap.youdomain.com (LLDAP_DOMAIN) and login with admin:password and then create the user you defined in your .env File.
+
+The user should have the group ldap_password_manager. And of course change the admin password. For futher information look into the [lldap Repo](https://github.com/lldap/lldap), very good project.
+## Setup on server
+``` sh
+git clone project
+cd project
+chmod +x ./setup.sh
+./setup.sh server generateSecrets
+# update the .env file
+docker compose up -d
+```
+
+### Traefik is already configured what should I do?
+If you already have traefik running and blocking your ports you can user the no-traefik.docker-compose.yml.
+````bash
+docker compose -f no-traefik.docker-compose.yml up -d
+````
+You have to put in the correct values in the .env file for Entrypoint, Network and CertResolver.
+### Pipeline usage
+In the folder .github/workflows there is a github Actions pipeline predefined. It leverages the Action secrets to pull all configuration values.
+
+The example pipeline uses some bad practices by building on the server it will run on. This is because I personally don't consider it that bad for a small project.
+
+Before the first running of the pipeline you need to:
+- create a user on your server
+- give the user access to: docker, (sudo), ssh -> sudo see pitfalls with setup.sh
+- clone the repository on the server
+- give the ./setup.sh script execution rights
+- execute the setup.sh script with the generateSecrets argument
+- depending on weather you want to use envvars or the .env file you will need to update the .env file or your pipeline
+
+After that the setup.sh will only need to run when you have changes in your .env or environment variables.
+But if your pipeline should react to such variable changes then it would make sense to run it.
+But you should not add the generateSecrets to the setup.sh script because it would regenerate all secrets and break your system.
 ## Local setup
 ### Database
-For the local configuration, I configured it in a way to only run frontend backend and db locally. And access your database.
+For the local configuration, I configured it in a way to only run frontend backend and db locally. And access your authelia running on your server.
 ``` sh
 git clone project
 cd project
 cp .env.local .env # some values need to be filled for the backend (clientId and auth-domain) 
 chmod +x ./localSetup.sh
-./localSetup.sh # needed to fill the mongdb script placeholders
+./localSetup.sh local # needed to fill the mongdb script placeholders
 docker compose -f local.docker-compose.yml up -d mongodb # only starts the db
 ```
 ### frontend
@@ -78,14 +114,9 @@ since the backend is relying on environment variables I would recommend to run i
 docker compose -f local.docker-compose.yml build backend
 docker compose -f local.docker-compose.yml up backend
 ```
-### Change values in the .env file
-When calling the setup.sh script some of the env variables will get copied to the authelia configuration file.
-First the templatefile is copied to the config file and then the placholders will be replaced.
-
-After the first Application start, it is necessary to call it with sudo, because authelia changes permissions to the file.
 # Configuration in .env file
 There will be some secrets that you need to generate and copy to the .env file.
-Here is a helper page from authelia you can use https://www.authelia.com/reference/guides/generating-secure-values/#generating-a-random-alphanumeric-string
+Here is a helper page from authelia you can use to generate secrets in case you dont want to do it with the setup.sh script: https://www.authelia.com/reference/guides/generating-secure-values/#generating-a-random-alphanumeric-string
 ### General
 - APP_NAME=YourAppName : Used to avoid nameconflics, added for example to container names
 
@@ -94,7 +125,6 @@ example for https://app.yourdomain.com
 - D_ENDING=com : Domain ending
 - AUTH_SUBDOMAIN=auth : Subdomain for authelia -> https://auth.yourdomain.com
 - LDAP_SUBDOMAIN=ldap : Subdomain for you ldap (user management) -> https://ldap.yourdomain.com
-
 
 - CALLBACK_PATH=home : The path where the frontend will redirect to after login (must fit exactly with that you program in the frontend)
 
