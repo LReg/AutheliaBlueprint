@@ -27,7 +27,11 @@ else
     echo "Kopiere die local setup Datei nach .env"
 fi
 
-cp "$ENV_FILE" "./.env"
+if [ ! -f "$ENV_FILE" ]; then
+    echo "Copy $ENV_FILE to .env"
+    cp "$ENV_FILE" "./.env"
+fi
+
 ENV_FILE="./.env"
 
 # Prüfen, ob die env-Datei existiert
@@ -45,12 +49,12 @@ if [ "$GENERATE_SECRETS" = true ]; then
 fi
 
 if [ "$SERVER" = true ]; then
-  ./docker/scripts/changeEnvVars.sh "$ENV_FILE" "./docker/volumes/authelia/config/configuration.template.yml" "./docker/volumes/authelia/config/configuration.yml"
+  ./docker/scripts/changeEnvVars.sh "$ENV_FILE" "./docker/templateFiles/configuration.template.yml" "./docker/volumes/authelia/config/configuration.yml"
   if [ "$GENERATE_SECRETS" = true ]; then
     ./docker/scripts/setJWTPrivateKey.sh "./docker/volumes/authelia/config/secrets/oidc/jwks/rsa.4096.key"
   fi
 fi
-./docker/scripts/changeEnvVars.sh "$ENV_FILE" "./docker/scripts/mongo-init.template.js" "./docker/scripts/mongo-init.js"
+./docker/scripts/changeEnvVars.sh "$ENV_FILE" "./docker/templateFiles/mongo-init.template.js" "./docker/scripts/mongo-init.js"
 
 
 

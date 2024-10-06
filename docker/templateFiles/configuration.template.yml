@@ -18,7 +18,7 @@ identity_validation:
 
 authentication_backend:
   ldap:
-    address: 'ldap://authelia-lldap:3890'
+    address: 'ldap://$APP_NAME-authelia-lldap:3890'
     implementation: 'custom'
     timeout: '5s'
     start_tls: false
@@ -63,7 +63,7 @@ identity_providers:
         - userinfo
       allowed_origins:
         - https://$APP_SUBDOMAIN.$DOMAIN.$D_ENDING
-        - https://localhost:4200
+        - http://localhost:4200
       allowed_origins_from_client_redirect_uris: false
     lifespans:
       access_token: '1h'
@@ -79,7 +79,7 @@ identity_providers:
         authorization_policy: 'one_factor'
         redirect_uris:
           - 'https://$APP_SUBDOMAIN.$DOMAIN.$D_ENDING/$CALLBACK_PATH'
-          - 'http://localhost4200/$CALLBACK_PATH'
+          - 'http://localhost:4200/$CALLBACK_PATH'
         scopes:
           - 'openid'
           - 'profile'
@@ -97,7 +97,7 @@ session:
       inactivity: '1 hour'
 
   redis:
-    host: 'redis'
+    host: '$APP_NAME-redis'
     port: 6379
     password: '$AUTHELIA_SESSION_REDIS_PASSWORD'
 
@@ -109,7 +109,7 @@ regulation:
 storage:
   encryption_key: '$POSTGRES_ENCRYPTION_KEY'
   postgres:
-    address: 'tcp://authelia-postgres:5432'
+    address: 'tcp://$APP_NAME-authelia-postgres:5432'
     schema: 'public'
     username: 'authelia'
     database: 'authelia'

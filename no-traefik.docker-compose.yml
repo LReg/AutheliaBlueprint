@@ -90,7 +90,7 @@ services:
     environment:
       - AUTH_DOMAIN=${AUTH_SUBDOMAIN}.${DOMAIN}.${D_ENDING}
       - OIDC_CLIENT_ID=${OIDC_CLIENT_ID}
-      - MONGO_URI=mongodb://${DB_USERNAME}:${DB_PASSWORD}@mongodb:27017/public?authSource=public
+      - MONGO_URI=mongodb://${DB_USERNAME}:${DB_PASSWORD}@${APP_NAME}-mongodb:27017/public?authSource=public
     networks:
       - TraefikNetwork
     labels:
