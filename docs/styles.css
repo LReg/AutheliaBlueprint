@@ -68,3 +68,13 @@ aside a {
 aside a:hover {
     background-color: #00168a;
 }
+
+code {
+    display: block;
+    background-color: #e7e7e7;
+    padding: 0 .7rem;
+    border-radius: 0.3rem;
+    font-size: 1.1em;
+    border: 1px solid #ccc;
+    margin: .3rem;
+}

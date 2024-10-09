@@ -11,7 +11,7 @@
 </head>
 <body>
     <nav>
-        <a href="AutheliaBlueprint">Authelia Blueprint Documentation</a>
+        <a href="AutheliaBlueprint">Authelia Blueprint Docs</a>
     </nav>
     <main>
         <h1>Introduction</h1>
@@ -23,9 +23,6 @@
                 The Idea is to handle the complete configuration and authentication and be easy to configure without previous knowledge.
             </p>
             <h2>What does this project deliver?</h2>
-            <p>
-                After a fast configuration this project delivers:
-            </p>
             <ul>
                 <li>A 3 Layer architecture</li>
                 <li>Production, local and optionally a dev environment</li>
@@ -33,6 +30,9 @@
                 <li>https communication provided by traefik and LetsEntrypt</li>
                 <li>choose you own technologies for Front- and Backend</li>
             </ul>
+            <h2>What type of Project is this for?</h2>
+            <p>This project is meant for Prototypes and Applications for up to 5000 monthly active Users.</p>
+            <p>Because it is already Dockerized, the path is paved to move to a bigger scaling.</p>
         </section>
         <h1 id="getstarted">Get Started</h1>
         <hr>
@@ -48,17 +48,67 @@
         <h1 id="pre">Check and apply prerequisites</h1>
         <hr>
         <section>
-
+            <ol>
+                <li>A Server to run on</li>
+                <li>The Server needs docker installed, look up the Docker Documentation for installation guides</li>
+                <li>And you need a Domain for Certificates.For the intended configuration you will need three,<br/> you can name the subdomains whatever you want tho. This is an example:
+                   <ul>
+                       <li>app.yourdomain.com -> for the application, used by the visitor</li>
+                       <li>auth.yourdomain.com -> for authelia</li>
+                       <li>ldap.yourdomain.com -> for the usermanagement</li>
+                   </ul>
+                    They should all point to the Server IP with an A Record
+                </li>
+                <li>And for local development Docker Desktop is recommended</li>
+            </ol>
         </section>
         <h1 id="choosetech">Choose Your Wanted Technologies</h1>
         <hr>
         <section>
+            <h2>Create an Empty Repository</h2>
+            You can choose any Git Platform, but for GitHub there are already simple Pipelines included.
+            Then navigate to your Repository
+            <code>
+                git clone https://github.com/my-name/my-repo.git
+            </code>
+            <code>
+                cd /path/to/my/repo
+            </code>
+            <h2>Copy the latest Release in your Repository</h2>
 
+            <h2>Give execution rights to script</h2>
+            <code>
+                chmod +x ./use.sh
+            </code>
+            <h2>Decide on Technologies from these Options</h2>
+            <h3>Frontend</h3>
+            <ul>
+                <li>angular</li>
+            </ul>
+            <h3>Backend</h3>
+            <ul>
+                <li>go-fiber</li>
+            </ul>
+            <h2>Execute script with wanted Technologies</h2>
+            Use the exact wording from the list, because it needs to find a folder with that name.
+            <code>
+                ./use.sh [backend-technology] [frontend-technology]
+            </code>
+            <h2>Push your changes to you repository</h2>
+            <code>
+                git add frontend backend
+            </code>
+            <code>
+                git commit -m "init"
+            </code>
+            <code>
+                git push
+            </code>
         </section>
         <h1 id="serverenv">Setup server environment</h1>
         <hr>
         <section>
-
+            <h2>Log into your server via ssh</h2>
         </section>
         <h1 id="localenv">Setup local environment</h1>
         <hr>
