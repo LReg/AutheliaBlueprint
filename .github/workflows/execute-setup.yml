@@ -1,8 +1,5 @@
 name: deploy to server
 on:
-  push:
-    branches:
-      - main
   workflow_dispatch:
 jobs:
   build:
@@ -65,9 +62,4 @@ jobs:
           script: |
             cd AutheliaBlueprint 
             git pull
-            ./docker-cli.sh backend build
-            ./docker-cli.sh frontend build
-            ./docker-cli.sh backend down 
-            ./docker-cli.sh frontend down 
-            ./docker-cli.sh backend up 
-            ./docker-cli.sh frontend up 
+            echo "${{ secrets.KEY }}" | sudo -S -E ./setup.sh server

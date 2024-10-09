@@ -1,7 +1,7 @@
 version: '3'
 
 services:
-  mongodb:
+  db:
     image: mongo:latest
     container_name: ${APP_NAME}-mongodb
     restart: always

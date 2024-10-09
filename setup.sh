@@ -43,6 +43,7 @@ fi
 chmod +x ./docker/scripts/setSecrets.sh
 chmod +x ./docker/scripts/changeEnvVars.sh
 chmod +x ./docker/scripts/setJWTPrivateKey.sh
+chmod +x ./docker-cli.sh
 
 if [ "$GENERATE_SECRETS" = true ]; then
   ./docker/scripts/setSecrets.sh "$ENV_FILE"

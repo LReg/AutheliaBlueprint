@@ -25,5 +25,6 @@ go.work.sum
 docker/volumes/database
 docker/volumes/redis
 docker/volumes/authelia/config/configuration.yml
+docker/volumes/authelia/config/secrets/oidc/jwks/rsa.4096.key
 docker/scripts/local-mongo-init.js
 docker/scripts/local-init.js
