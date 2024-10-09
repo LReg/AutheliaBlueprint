@@ -1,0 +1,28 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+body {
+    font-family: 'Roboto', sans-serif;
+    background-color: #f4f4f4;
+    color: #333;
+    line-height: 1.6;
+}
+nav {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 8rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+nav span {
+    font-size: 4rem;
+    font-weight: 700;
+    color: #333;
+    margin-right: 1rem;
+    cursor: pointer;
+}
