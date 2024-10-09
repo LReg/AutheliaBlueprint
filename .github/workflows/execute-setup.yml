@@ -1,4 +1,4 @@
-name: deploy to server
+name: execute setup script (react to environment changes)
 on:
   workflow_dispatch:
 jobs:

@@ -1,4 +1,4 @@
-name: deploy to server
+name: restart traefik
 on:
   workflow_dispatch:
 jobs:
