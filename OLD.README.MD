@@ -155,7 +155,7 @@ Maybe you already have a treafik instance running, then you can delete it from t
 - OIDC_CLIENT_ID=your-client-id
 - OIDC_CLIENT_NAME=your-client-name
  
- ### Database
+### Database
 - DB_ROOT_USERNAME=root
 - DB_ROOT_PASSWORD=root-password : **generate secret**
 - DB_USERNAME=db-username

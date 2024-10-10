@@ -19,7 +19,7 @@ else
   GENERATE_SECRETS=false
 fi
 
-if [ "$SERVER" = true ]; then
+if [ "$SERVER" == true ]; then
     ENV_FILE="./.env.example"
     echo "Kopiere die server setup Datei nach .env"
 else
@@ -45,13 +45,13 @@ chmod +x ./docker/scripts/changeEnvVars.sh
 chmod +x ./docker/scripts/setJWTPrivateKey.sh
 chmod +x ./docker-cli.sh
 
-if [ "$GENERATE_SECRETS" = true ]; then
+if [ "$GENERATE_SECRETS" == true ]; then
   ./docker/scripts/setSecrets.sh "$ENV_FILE"
 fi
 
-if [ "$SERVER" = true ]; then
+if [ "$SERVER" == true ]; then
   ./docker/scripts/changeEnvVars.sh "$ENV_FILE" "./docker/templateFiles/configuration.template.yml" "./docker/volumes/authelia/config/configuration.yml"
-  if [ "$GENERATE_SECRETS" = true ]; then
+  if [ "$GENERATE_SECRETS" == true ]; then
     ./docker/scripts/setJWTPrivateKey.sh "./docker/volumes/authelia/config/secrets/oidc/jwks/rsa.4096.key"
   fi
 fi
