@@ -4,7 +4,7 @@ if [ ! -f "./.env" ]; then
     echo "File ./.env is missing, please execute setup script first, see documentation."
 fi
 
-if [ "$#" -ne 2 ] || [ "$#" -ne 3 ]; then
+if [ "$#" -ne 2 ] && [ "$#" -ne 3 ]; then
     echo "Usage: $0 <db|frontend|backend|auth|traefik> <up|down|build|logs> [local]"
     exit 1
 fi
