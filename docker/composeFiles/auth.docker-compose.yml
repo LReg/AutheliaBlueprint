@@ -3,7 +3,7 @@ services:
     image: authelia/authelia
     container_name: ${APP_NAME}-authelia
     volumes:
-      - ./docker/volumes/authelia/config:/config
+      - ../volumes/authelia/config:/config
     networks:
       - TraefikNetwork
     labels:
@@ -41,7 +41,7 @@ services:
       - 'traefik.http.routers.${APP_NAME}-router-lldap.tls.certresolver=${TRAEFIK_CERT_RESOLVER}'
       - 'traefik.http.services.${APP_NAME}-service.loadbalancer.server.port=17170'
     volumes:
-      - "./docker/volumes/lldap:/data"
+      - "../volumes/lldap:/data"
     environment:
       - "LLDAP_JWT_SECRET=${LLDAP_JWT_SECRET}"
       - "LLDAP_KEY_SEED=${LLDAP_KEY_SEED}"
@@ -51,7 +51,7 @@ services:
     image: postgres
     container_name: ${APP_NAME}-authelia-postgres
     volumes:
-      - ./docker/volumes/authelia/postgres:/var/lib/mysql
+      - ../volumes/authelia/postgres:/var/lib/mysql
     networks:
       - TraefikNetwork
     expose:
@@ -67,7 +67,7 @@ services:
     image: redis:alpine
     container_name: ${APP_NAME}-redis
     volumes:
-      - ./docker/volumes/redis:/data
+      - ../volumes/redis:/data
     networks:
       - TraefikNetwork
     expose:

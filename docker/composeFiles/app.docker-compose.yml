@@ -39,8 +39,8 @@ services:
       MONGO_INITDB_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
       MONGO_INITDB_DATABASE: ${DB_USERNAME}
     volumes:
-      - ./docker/volumes/database:/data/db
-      - ./docker/scripts/mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
+      - ../volumes/database:/data/db
+      - ../scripts/mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
 
   frontend:
     container_name: ${APP_NAME}-frontend
