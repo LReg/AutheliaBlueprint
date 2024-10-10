@@ -28,3 +28,13 @@ done
 cp -r  "./frontend/$2"/* ./frontend
 
 rm -rf "./frontend/$2"
+
+for dir in ./backend/*/; do
+    if [[ $(basename "$dir") != "$1" ]]; then
+        rm -rf "$dir"
+    fi
+done
+
+cp -r  "./backend/$1"/* ./backend
+
+rm -rf "./backend/$1"
