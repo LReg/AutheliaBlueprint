@@ -37,7 +37,7 @@ elif [ "$2" == "down" ] || [ "$2" == "build" ]; then
     docker compose -f docker/composeFiles/app.docker-compose.yml --env-file .env "$2" "$1"
   fi
 
-elif [ "$2" == "start" ]; then
+elif [ "$2" == "up" ]; then
   # up with some extra tags
 
   if [ "$1" == "traefik" ]; then
