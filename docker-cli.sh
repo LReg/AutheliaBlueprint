@@ -24,29 +24,29 @@ if [ $LOCAL == true ]; then
 
   docker compose -f docker/composeFiles/local.docker-compose.yml --env-file .env "$2" "$1"
 
-elif [ "$2" == down ] || [ "$2" == build ]; then
+elif [ "$2" == "down" ] || [ "$2" == "build" ]; then
   # Build and down
 
-  if [ "$1" == traefik ]; then
+  if [ "$1" == "traefik" ]; then
     docker compose -f docker/composeFiles/traefik.docker-compose.yml --env-file .env "$2" "$1"
   fi
-  if [ "$1" == auth ]; then
+  if [ "$1" == "auth" ]; then
     docker compose -f docker/composeFiles/auth.docker-compose.yml --env-file .env "$2" "$1"
   fi
-  if [ "$1" == frontend ] || [ "$1" == backend ] || [ "$1" == db ]; then
+  if [ "$1" == "frontend" ] || [ "$1" == "backend" ] || [ "$1" == "db" ]; then
     docker compose -f docker/composeFiles/app.docker-compose.yml --env-file .env "$2" "$1"
   fi
 
-elif [ "$2" == start ]; then
+elif [ "$2" == "start" ]; then
   # up with some extra tags
 
-  if [ "$1" == traefik ]; then
+  if [ "$1" == "traefik" ]; then
     docker compose -f docker/composeFiles/traefik.docker-compose.yml --env-file .env "$2" "$1" -d
   fi
-  if [ "$1" == auth ]; then
+  if [ "$1" == "auth" ]; then
     docker compose -f docker/composeFiles/auth.docker-compose.yml --env-file .env "$2" "$1" -d --force-recreate --wait --wait-timeout 120
   fi
-  if [ "$1" == frontend ] || [ "$1" == backend ] || [ "$1" == db ]; then
+  if [ "$1" == "frontend" ] || [ "$1" == "backend" ] || [ "$1" == "db" ]; then
     docker compose -f docker/composeFiles/app.docker-compose.yml --env-file .env "$2" "$1" -d
   fi
 
