@@ -2,9 +2,6 @@ services:
   backend:
     pid: host
     container_name: ${APP_NAME}-backend
-    depends_on:
-      authelia:
-        condition: service_healthy
     build:
       context: ./backend
       dockerfile: Dockerfile
