@@ -19,23 +19,17 @@ else
   GENERATE_SECRETS=false
 fi
 
-if [ "$SERVER" == true ]; then
+if [ "$SERVER" == true ] && [ ! -f "$ENV_FILE" ]; then
     ENV_FILE="./.env.example"
     echo "Kopiere die server setup Datei nach .env"
-else
+elif [ "$SERVER" == false ] && [ ! -f "$ENV_FILE" ]; then
     ENV_FILE="./.env.local"
     echo "Kopiere die local setup Datei nach .env"
 fi
 
-if [ ! -f "$ENV_FILE" ]; then
-    echo "Copy $ENV_FILE to .env"
-    cp "$ENV_FILE" "./.env"
-fi
-
 ENV_FILE="./.env"
 
-# Prüfen, ob die env-Datei existiert
-if [[ ! -f "$ENV_FILE" ]]; then
+if [ ! -f "$ENV_FILE" ]; then
     echo "Die Datei $ENV_FILE existiert nicht."
     exit 1
 fi
