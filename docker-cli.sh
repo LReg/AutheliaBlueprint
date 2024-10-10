@@ -1,7 +1,7 @@
 set -e
 
-if [ ! -f "./env" ]; then
-    echo "File .env is missing, please execute setup script first, see documentation."
+if [ ! -f "./.env" ]; then
+    echo "File ./.env is missing, please execute setup script first, see documentation."
 fi
 
 if [ "$#" -ne 2 ] || [ "$#" -ne 3 ]; then
