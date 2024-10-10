@@ -3,7 +3,7 @@ services:
     pid: host
     container_name: ${APP_NAME}-backend
     build:
-      context: ./backend
+      context: ../../backend
       dockerfile: Dockerfile
     environment:
       # maybe consider to not go via internet instead use the internal network
@@ -43,7 +43,7 @@ services:
     container_name: ${APP_NAME}-frontend
     restart: always
     build:
-      context: ./frontend
+      context: ../../frontend
       dockerfile: Dockerfile
       args:
         - BASE_URL=https://${APP_SUBDOMAIN}.${DOMAIN}.${D_ENDING}
