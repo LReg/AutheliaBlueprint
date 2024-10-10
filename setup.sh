@@ -7,6 +7,8 @@ if [ "$#" -eq 0 ] || [ "$#" -gt 2 ]; then
     exit 1
 fi
 
+ENV_FILE="./.env"
+
 if [ "$1" == "server" ]; then
   SERVER=true
 else
@@ -20,14 +22,13 @@ else
 fi
 
 if [ "$SERVER" == true ] && [ ! -f "$ENV_FILE" ]; then
-    ENV_FILE="./.env.example"
+    cp "./.env.example" "./.env"
     echo "Kopiere die server setup Datei nach .env"
 elif [ "$SERVER" == false ] && [ ! -f "$ENV_FILE" ]; then
-    ENV_FILE="./.env.local"
+    cp "./.env.local" "./.env"
     echo "Kopiere die local setup Datei nach .env"
 fi
 
-ENV_FILE="./.env"
 
 if [ ! -f "$ENV_FILE" ]; then
     echo "Die Datei $ENV_FILE existiert nicht."
