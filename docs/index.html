@@ -30,9 +30,9 @@
                 <li>https communication provided by traefik and LetsEntrypt</li>
                 <li>choose you own technologies for Front- and Backend</li>
             </ul>
-            <h2>What type of Project is this for?</h2>
-            <p>This project is meant for Prototypes and Applications for up to 5000 monthly active Users.</p>
-            <p>Because it is already Dockerized, the path is paved to move to a bigger scaling.</p>
+            <h2>What type of project is this for?</h2>
+            <p>This project is meant for prototypes and applications for up to 5000 monthly active Users.</p>
+            <p>Because it is already dockerized, the path is paved to move to a bigger scaling.</p>
         </section>
         <h1 id="getstarted">Get Started</h1>
         <hr>
@@ -50,8 +50,8 @@
         <section>
             <ol>
                 <li>A Server to run on</li>
-                <li>The Server needs docker installed, look up the Docker Documentation for installation guides</li>
-                <li>And you need a Domain for Certificates.For the intended configuration you will need three,<br/> you can name the subdomains whatever you want tho. This is an example:
+                <li>The Server needs docker installed, look up the Docker documentation for installation guides</li>
+                <li>And you need a domain for certificates. For the intended configuration you will need three,<br/> you can name the subdomains whatever you want tho. This is an example:
                    <ul>
                        <li>app.yourdomain.com -> for the application, used by the visitor</li>
                        <li>auth.yourdomain.com -> for authelia</li>
@@ -66,7 +66,7 @@
         <hr>
         <section>
             <h2>Create an Empty Repository</h2>
-            You can choose any Git Platform, but for GitHub there are already simple Pipelines included.
+            You can choose any Git Platform, but for GitHub there are already simple pipelines included.
             Then navigate to your Repository
             <code>
                 git clone https://github.com/my-name/my-repo.git
@@ -110,7 +110,7 @@
         <section>
             <fieldset>
                 <legend>Disclaimer</legend>
-                <p>This Guide uses a build on server and then run approach. For now this blueprint does not feature any Docker Registry involvement.</p>
+                <p>This Guide uses a build on server and then run approach. For now this blueprint does not feature any docker registry involvement.</p>
             </fieldset>
             <h2>Log into your server via ssh</h2>
             <code>
@@ -131,7 +131,7 @@
                 su - my-technical-user
             </code>
             <h2>Gain Access to Repository</h2>
-            <p>If your Repository is public you can skip this step. Else it is recommended to use an ssh key.</p>
+            <p>If your repository is public you can skip this step. Else it is recommended to use an ssh key.</p>
             <p><a target="_blank" href="https://docs.github.com/en/authentication/connecting-to-github-with-ssh/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent">Here</a> Github explains this process.</p>
             <h2>Clone your Repository</h2>
             <code>
@@ -226,7 +226,7 @@
             <h2>Rerun setup script to write template files from Authelia and DB</h2>
             You do not need generateSecrets anymore, because you already did that.
             <code>
-                ./setup.sh server
+                sudo ./setup.sh server
             </code>
             Any time you change the .env file you will need to rerun this script. You will probably need <strong>sudo</strong> tho because the docker container volumes are owned by root.
             <h2>Start your services</h2>
@@ -262,6 +262,8 @@
             <code>
                 ./docker-cli.sh frontend up
             </code>
+            <h3>Test if everything works</h3>
+            <p>You can visit app.youdomain.comj</p>
         </section>
         <h1 id="localenv">Setup local environment</h1>
         <hr>

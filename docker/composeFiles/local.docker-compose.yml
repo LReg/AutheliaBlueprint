@@ -16,13 +16,10 @@ services:
   backend:
     pid: host
     container_name: ${APP_NAME}-backend
-    depends_on:
-      mongodb:
-        condition: service_started
     ports:
       - "8080:8080"
     build:
-      context: ./backend
+      context: ../../backend
       dockerfile: Dockerfile
     environment:
       - AUTH_DOMAIN=${AUTH_DOMAIN}
