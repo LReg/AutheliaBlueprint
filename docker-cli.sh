@@ -47,6 +47,7 @@ elif [ "$2" == "up" ]; then
     docker compose -f docker/composeFiles/auth.docker-compose.yml --env-file ./.env "$2" -d --force-recreate --wait --wait-timeout 120
   fi
   if [ "$1" == "frontend" ] || [ "$1" == "backend" ] || [ "$1" == "db" ]; then
+    docker compose -f docker/composeFiles/app.docker-compose.yml --env-file ./.env config
     docker compose -f docker/composeFiles/app.docker-compose.yml --env-file ./.env "$2" "$1" -d --force-recreate
   fi
 
