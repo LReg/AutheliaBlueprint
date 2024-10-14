@@ -55,7 +55,7 @@ if [ "$SERVER" == true ]; then
     ./docker/scripts/setJWTPrivateKey.sh "$DOCKER_PATH/volumes/authelia/config/secrets/oidc/jwks/rsa.4096.key"
   fi
 fi
-mkdir -p "$DOCKER_PATH/scripts/mongo-init.js"
+mkdir -p "$DOCKER_PATH/scripts"
 ./docker/scripts/changeEnvVars.sh "$ENV_FILE" "./docker/templateFiles/mongo-init.template.js" "$DOCKER_PATH/scripts/mongo-init.js"
 
 
