@@ -63,5 +63,7 @@ jobs:
           script: |
             cd AutheliaBlueprint 
             echo "${{ secrets.KEY }}" | sudo -S -E ./setup.sh server
+            chmod +x ./docker/scripts/unsetEmptyVars.sh
+            source ./docker/scripts/unsetEmptyVars.sh ./.env
             ./docker-cli.sh traefik down 
             ./docker-cli.sh traefik up 
