@@ -3,7 +3,7 @@ services:
     image: authelia/authelia
     container_name: ${APP_NAME}-authelia
     volumes:
-      - ../volumes/authelia/config:/config
+      - ${DOCKER_VOLUME_PATH}/volumes/authelia/config:/config
     networks:
       - TraefikNetwork
     labels:
@@ -51,7 +51,7 @@ services:
     image: postgres
     container_name: ${APP_NAME}-authelia-postgres
     volumes:
-      - ../volumes/authelia/postgres:/var/lib/mysql
+      - ${DOCKER_VOLUME_PATH}/volumes/authelia/postgres:/var/lib/mysql
     networks:
       - TraefikNetwork
     expose:

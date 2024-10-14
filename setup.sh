@@ -39,18 +39,21 @@ chmod +x ./docker/scripts/setSecrets.sh
 chmod +x ./docker/scripts/changeEnvVars.sh
 chmod +x ./docker/scripts/setJWTPrivateKey.sh
 chmod +x ./docker-cli.sh
+chmod +x ./docker/scripts/getEnv.sh
+
+DOCKER_PATH=$(./docker/scripts/getEnv.sh ./env DOCKER_VOLUME_PATH)
 
 if [ "$GENERATE_SECRETS" == true ]; then
   ./docker/scripts/setSecrets.sh "$ENV_FILE"
 fi
 
 if [ "$SERVER" == true ]; then
-  ./docker/scripts/changeEnvVars.sh "$ENV_FILE" "./docker/templateFiles/configuration.template.yml" "./docker/volumes/authelia/config/configuration.yml"
+  ./docker/scripts/changeEnvVars.sh "$ENV_FILE" "./docker/templateFiles/configuration.template.yml" "$DOCKER_PATH/volumes/authelia/config/configuration.yml"
   if [ "$GENERATE_SECRETS" == true ]; then
-    ./docker/scripts/setJWTPrivateKey.sh "./docker/volumes/authelia/config/secrets/oidc/jwks/rsa.4096.key"
+    ./docker/scripts/setJWTPrivateKey.sh "$DOCKER_PATH/volumes/authelia/config/secrets/oidc/jwks/rsa.4096.key"
   fi
 fi
-./docker/scripts/changeEnvVars.sh "$ENV_FILE" "./docker/templateFiles/mongo-init.template.js" "./docker/scripts/mongo-init.js"
+./docker/scripts/changeEnvVars.sh "$ENV_FILE" "./docker/templateFiles/mongo-init.template.js" "$DOCKER_PATH/scripts/mongo-init.js"
 
 
 
