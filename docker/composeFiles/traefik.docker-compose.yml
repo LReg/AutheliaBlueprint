@@ -32,7 +32,7 @@ services:
     volumes:
       #That Traefik can listen to the Docker events
       - /var/run/docker.sock:/var/run/docker.sock
-      - ${DOCKER_VOLUME_PATH}/volumes/traefik/acme-volume:/acme
+      - "${DOCKER_VOLUME_PATH}/volumes/traefik/acme-volume:/acme"
     networks:
       - TraefikNetwork
 
