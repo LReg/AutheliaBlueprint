@@ -72,6 +72,8 @@ jobs:
             ./docker-cli.sh backend build
             ./docker-cli.sh frontend build
             ./docker-cli.sh backend down 
+            ./docker-cli.sh db down 
             ./docker-cli.sh frontend down 
             ./docker-cli.sh backend up 
             ./docker-cli.sh frontend up 
+            ./docker-cli.sh db down up 
