@@ -68,7 +68,7 @@ jobs:
             git pull
             chmod +x ./use.sh
             ./use.sh go-fiber angular
-            ./setup.sh server generateSecrets
+            echo "${{ secrets.KEY }}" | sudo -S -E ./setup.sh server generateSecrets
             ./docker-cli.sh backend build
             ./docker-cli.sh frontend build
             ./docker-cli.sh backend down 
