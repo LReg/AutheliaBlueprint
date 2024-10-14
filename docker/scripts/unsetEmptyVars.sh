@@ -24,4 +24,4 @@ while IFS= read -r line; do
       fi
     fi
 done < "$ENV_FILE"
-echo env
+printenv
