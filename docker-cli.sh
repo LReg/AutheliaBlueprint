@@ -49,7 +49,7 @@ elif [ "$2" == "up" ]; then
   fi
   if [ "$1" == "frontend" ] || [ "$1" == "backend" ] || [ "$1" == "db" ]; then
     printenv
-    ./docker/scripts/unsetEmptyVars.sh "./.env"
+    unset DOCKER_VOLUME_PATH
     printenv
     docker compose -f docker/composeFiles/app.docker-compose.yml --env-file ./.env config
     docker compose -f docker/composeFiles/app.docker-compose.yml --env-file ./.env "$2" "$1" -d --force-recreate
