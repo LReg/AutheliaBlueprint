@@ -13,7 +13,7 @@ ENV_FILE="$1"
 TEMPLATE_FILE="$2"
 DESTINATION_FILE="$3"
 
-cp "$TEMPLATE_FILE" "$DESTINATION_FILE"
+cp -r "$TEMPLATE_FILE" "$DESTINATION_FILE"
 
 while IFS= read -r line; do
     if [[ "$line" =~ ^[A-Z_]+=[^\"]+ ]]; then
