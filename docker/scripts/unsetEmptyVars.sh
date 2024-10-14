@@ -18,7 +18,7 @@ while IFS= read -r line; do
     LINE_NUMBER=$((LINE_NUMBER+1))
     if [[ "$line" =~ ^[A-Z_]+=[^\"]+ ]]; then
         VAR_NAME=$(echo "$line" | cut -d'=' -f1)
-      if [ -n "${!VAR_NAME}" ] || [ "${!VAR_NAME}" == "" ]; then
+      if [ "${!VAR_NAME}" == "" ]; then
         unset "$VAR_NAME"
         echo "Unset $VAR_NAME"
       fi
