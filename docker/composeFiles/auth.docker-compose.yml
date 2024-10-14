@@ -67,7 +67,7 @@ services:
     image: redis:alpine
     container_name: ${APP_NAME}-redis
     volumes:
-      - ../volumes/redis:/data
+      - ${DOCKER_VOLUME_PATH}/volumes/redis:/data
     networks:
       - TraefikNetwork
     expose:
