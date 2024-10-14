@@ -1,6 +1,5 @@
 set -e
 
-./docker/scripts/unsetEmptyVars.sh "./.env"
 
 if [ ! -f "./.env" ]; then
     echo "File ./.env is missing, please execute setup script first, see documentation."
@@ -49,6 +48,8 @@ elif [ "$2" == "up" ]; then
     docker compose -f docker/composeFiles/auth.docker-compose.yml --env-file ./.env "$2" -d --force-recreate --wait --wait-timeout 120
   fi
   if [ "$1" == "frontend" ] || [ "$1" == "backend" ] || [ "$1" == "db" ]; then
+    printenv
+    ./docker/scripts/unsetEmptyVars.sh "./.env"
     printenv
     docker compose -f docker/composeFiles/app.docker-compose.yml --env-file ./.env config
     docker compose -f docker/composeFiles/app.docker-compose.yml --env-file ./.env "$2" "$1" -d --force-recreate
