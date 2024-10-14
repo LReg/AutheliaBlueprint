@@ -39,14 +39,17 @@ export const OIDCAuthMiddleware = (req: Request, res: Response, next: NextFuncti
 const storeUserInDB = async (db: Db, user: User) => {
     await upsertUser(db, user);
 
-    let role = await getUserRole(db, user.preferredUsername);
-    if (role === Role.NOROLE) {
-        await setUserRole(db, user.preferredUsername, Role.USER);
-        role = Role.USER;
+    try {
+        let role = await getUserRole(db, user.preferredUsername);
+        if (role === Role.NOROLE) {
+            await setUserRole(db, user.preferredUsername, Role.USER);
+            role = Role.USER;
+        }
+
+        user.role = role;
+    } catch (err) {
+        console.error('Error while storing user in DB:', err);
     }
-
-    user.role = role;
-
 };
 
 const fetchUserInfo = async (userinfoEndpoint: string, token: string): Promise<User | null> => {
