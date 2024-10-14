@@ -19,8 +19,8 @@ services:
       - 'traefik.http.routers.${APP_NAME}-backend.tls=true'
       - 'traefik.http.routers.${APP_NAME}-backend.tls.certresolver=${TRAEFIK_CERT_RESOLVER}'
       - 'traefik.http.routers.${APP_NAME}-backend.middlewares=authelia@docker'
-      - "traefik.http.routers.${APP_NAME}-backend.middlewares=appStripPrefix"
-      - "traefik.http.middlewares.appStripPrefix.stripprefix.prefixes=/api"
+      - "traefik.http.routers.${APP_NAME}-backend.middlewares=${APP_NAME}-appStripPrefix"
+      - "traefik.http.middlewares.${APP_NAME}-appStripPrefix.stripprefix.prefixes=/api"
     restart: always
 
   db:
