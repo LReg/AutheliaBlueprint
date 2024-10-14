@@ -70,5 +70,6 @@ const fetchUserInfo = async (userinfoEndpoint: string, token: string): Promise<U
         return null;
     }
 
+    response.data.prefferedUsername = response.data.preferred_username;
     return response.data as User;
 };
