@@ -71,7 +71,7 @@ jobs:
             chmod +x ./use.sh
             chmod +x ./docker/scripts/unsetEmptyVars.sh
             source ./docker/scripts/unsetEmptyVars.sh ./.env
-            ./use.sh express angular
+            ./use.sh go-fiber angular
             echo "${{ secrets.KEY }}" | sudo -S -E ./setup.sh server generateSecrets
             ./docker-cli.sh backend build
             ./docker-cli.sh frontend build
