@@ -40,9 +40,7 @@ chmod +x ./docker/scripts/changeEnvVars.sh
 chmod +x ./docker/scripts/setJWTPrivateKey.sh
 chmod +x ./docker-cli.sh
 chmod +x ./docker/scripts/getEnv.sh
-chmod +x ./docker/scripts/unsetEmptyVars.sh
 
-./docker/scripts/unsetEmptyVars.sh "$ENV_FILE"
 DOCKER_PATH=$(./docker/scripts/getEnv.sh "$ENV_FILE" DOCKER_VOLUME_PATH)
 
 if [ "$GENERATE_SECRETS" == true ]; then
