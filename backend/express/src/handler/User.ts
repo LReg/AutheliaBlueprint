@@ -1,7 +1,7 @@
 import {User} from "../types/User";
 import {Db} from "mongodb";
 import { Request, Response} from 'express';
-import {getAllUsers} from "dao/UserDao";
+import {getAllUsers} from "../dao/UserDao";
 
 export const currentUser = async (req: Request, res: Response) => {
     const user = res.locals.user as User;
