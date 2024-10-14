@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import axios from 'axios';
-import { MongoClient, Db } from 'mongodb';
+import { Db } from 'mongodb';
 import { User, Role } from '../types/User';
 import {getUserRole, setUserRole, upsertUser} from "../dao/UserDao"; // Definiere deine User- und Role-Typen hier
 
@@ -27,19 +27,25 @@ export const OIDCAuthMiddleware = (req: Request, res: Response, next: NextFuncti
             }
             const db = res.locals.db as Db;
             storeUserInDB(db, user).then(() => {
-                res.locals.user = user;
+                res.locals.user = {
+                    email: user.email,
+                    name: user.name,
+                    preferredUsername: user.preferredUsername,
+                    role: user.role
+                };
                 next();
             });
         })
         .catch(err => {
-            next(err);
+            console.error('Error while fetching userinfo:', err);
+            res.status(500).send('Internal server error');
         });
 };
 
 const storeUserInDB = async (db: Db, user: User) => {
-    await upsertUser(db, user);
 
     try {
+        await upsertUser(db, user);
         let role = await getUserRole(db, user.preferredUsername);
         if (role === Role.NOROLE) {
             await setUserRole(db, user.preferredUsername, Role.USER);

@@ -1,7 +1,7 @@
 import {Router} from "express";
-import {currentUser, getAllUsers} from "../handler/User";
+import {currentUser, handleGetAllUsers} from "../handler/User";
 
 export const userRouter = Router();
 
 userRouter.get('/current', currentUser)
-userRouter.get('/all', getAllUsers)
+userRouter.get('/all', handleGetAllUsers)
