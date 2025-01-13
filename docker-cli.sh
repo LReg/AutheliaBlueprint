@@ -6,13 +6,13 @@ if [ ! -f "./.env" ]; then
 fi
 
 if [ "$#" -ne 2 ] && [ "$#" -ne 3 ]; then
-    echo "Usage: $0 <db|frontend|backend|auth|traefik> <up|down|build|logs> [local]"
+    echo "Usage: $0 <up|down|build> <db|frontend|backend|auth|traefik> [local]"
     exit 1
 fi
 
 if [ "$3" == "local" ]; then
   LOCAL=true
-  if [ "$1" != "db" ] && [ "$1" != "backend" ]; then
+  if [ "$2" != "db" ] && [ "$2" != "backend" ]; then
     echo "Local mode is only supported for db and backend"
     exit 1
   fi
@@ -20,35 +20,38 @@ else
   LOCAL=false
 fi
 
+# Local execution
 if [ $LOCAL == true ]; then
-  # Local execution
+  if [ "$1" == "down" ] || [ "$1" == "build" ]; then
+    docker compose -f docker/composeFiles/local.docker-compose.yml --env-file ./.env "$1" "$2"
+  else
+    docker compose -f docker/composeFiles/local.docker-compose.yml --env-file ./.env "$1" "$2" -d
+  fi
 
-  docker compose -f docker/composeFiles/local.docker-compose.yml --env-file ./.env "$2" "$1"
-
-elif [ "$2" == "down" ] || [ "$2" == "build" ]; then
+elif [ "$1" == "down" ] || [ "$1" == "build" ]; then
   # Build and down
 
   if [ "$1" == "traefik" ]; then
-    docker compose -f docker/composeFiles/traefik.docker-compose.yml --env-file ./.env "$2"
+    docker compose -f docker/composeFiles/traefik.docker-compose.yml --env-file ./.env "$1"
   fi
   if [ "$1" == "auth" ]; then
-    docker compose -f docker/composeFiles/auth.docker-compose.yml --env-file ./.env "$2"
+    docker compose -f docker/composeFiles/auth.docker-compose.yml --env-file ./.env "$1"
   fi
   if [ "$1" == "frontend" ] || [ "$1" == "backend" ] || [ "$1" == "db" ]; then
-    docker compose -f docker/composeFiles/app.docker-compose.yml --env-file ./.env "$2" "$1"
+    docker compose -f docker/composeFiles/app.docker-compose.yml --env-file ./.env "$1" "$2"
   fi
 
-elif [ "$2" == "up" ]; then
+elif [ "$1" == "up" ]; then
   # up with some extra tags
 
   if [ "$1" == "traefik" ]; then
-    docker compose -f docker/composeFiles/traefik.docker-compose.yml --env-file ./.env "$2" -d --force-recreate
+    docker compose -f docker/composeFiles/traefik.docker-compose.yml --env-file ./.env "$1" -d --force-recreate
   fi
   if [ "$1" == "auth" ]; then
-    docker compose -f docker/composeFiles/auth.docker-compose.yml --env-file ./.env "$2" -d --force-recreate --wait --wait-timeout 120
+    docker compose -f docker/composeFiles/auth.docker-compose.yml --env-file ./.env "$1" -d --force-recreate --wait --wait-timeout 120
   fi
   if [ "$1" == "frontend" ] || [ "$1" == "backend" ] || [ "$1" == "db" ]; then
-    docker compose -f docker/composeFiles/app.docker-compose.yml --env-file ./.env "$2" "$1" -d --force-recreate
+    docker compose -f docker/composeFiles/app.docker-compose.yml --env-file ./.env "$1" "$2" -d --force-recreate
   fi
 
 fi

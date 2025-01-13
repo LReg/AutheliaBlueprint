@@ -4,7 +4,7 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "vite",
+    "dev": "vite --port 4200",
     "build": "run-p type-check \"build-only {@}\" --",
     "preview": "vite preview",
     "build-only": "vite build",
@@ -12,8 +12,8 @@
   },
   "dependencies": {
     "vue": "^3.5.13",
-    "vue-oidc-client": "^1.0.0-alpha.5",
-    "vue-router": "^4.5.0"
+    "vue-router": "^4.5.0",
+    "oidc-client-ts": "^3.1.0"
   },
   "devDependencies": {
     "@tsconfig/node22": "^22.0.0",
