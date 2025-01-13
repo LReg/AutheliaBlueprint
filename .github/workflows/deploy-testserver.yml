@@ -72,12 +72,12 @@ jobs:
             chmod +x ./docker/scripts/unsetEmptyVars.sh
             source ./docker/scripts/unsetEmptyVars.sh ./.env
             ./use.sh express angular
-            echo "${{ secrets.KEY }}" | sudo -S -E ./setup.sh server generateSecrets
-            ./docker-cli.sh backend build
-            ./docker-cli.sh frontend build
-            ./docker-cli.sh backend down 
-            ./docker-cli.sh db down 
-            ./docker-cli.sh frontend down 
-            ./docker-cli.sh backend up 
-            ./docker-cli.sh frontend up 
-            ./docker-cli.sh db up 
+            echo "${{ secrets.KEY }}" | sudo -S -E ./setup.sh generateSecrets
+            ./docker-cli.sh build backend 
+            ./docker-cli.sh build frontend 
+            ./docker-cli.sh down backend 
+            ./docker-cli.sh down db 
+            ./docker-cli.sh down frontend 
+            ./docker-cli.sh up backend 
+            ./docker-cli.sh up frontend 
+            ./docker-cli.sh up db 

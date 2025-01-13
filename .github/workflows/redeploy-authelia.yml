@@ -65,6 +65,6 @@ jobs:
             cd AutheliaBlueprint 
             chmod +x ./docker/scripts/unsetEmptyVars.sh
             source ./docker/scripts/unsetEmptyVars.sh ./.env
-            echo "${{ secrets.KEY }}" | sudo -S -E ./setup.sh server
-            ./docker-cli.sh auth down
-            ./docker-cli.sh auth up
+            echo "${{ secrets.KEY }}" | sudo -S -E ./setup.sh
+            ./docker-cli.sh down auth 
+            ./docker-cli.sh up auth 

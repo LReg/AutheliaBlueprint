@@ -14,4 +14,4 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     - name: Build the Docker image
-      run: chmod +x ./use.sh && ./use.sh go-fiber angular && cp .env.local .env && ./docker-cli.sh frontend build
+      run: chmod +x ./use.sh && ./use.sh go-fiber vue && cp .env.local .env && ./docker-cli.sh frontend build
