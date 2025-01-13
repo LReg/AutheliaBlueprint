@@ -1,4 +1,6 @@
 #!/bin/bash
+# This scripts removes all Environmentvariables that are emptry and might be there from the pipeline
+# Event if they are empty they would overwrite the .env variables
 
 set -e
 

@@ -33,7 +33,7 @@ ENV CLIENT_ID=$CLIENT_ID
 RUN npm run envvars
 RUN npm run build
 
-FROM nginx:1.22.1 as frontend
+FROM nginx:1.27.3 as frontend
 COPY docker/remote.nginx.conf /etc/nginx/conf.d/default.conf
 COPY --from=f-prod /build/dist/frontend/browser /usr/share/nginx/html
 

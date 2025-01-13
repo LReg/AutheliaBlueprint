@@ -1,5 +1,5 @@
 #!/bin/bash
-
+# This script produces a key that is needed for authelia
 set -e
 
 if [ "$#" -ne 1 ]; then

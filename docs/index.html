@@ -248,8 +248,9 @@
             </code>
             <h4>After the first startup</h4>
             <p>On the first startup the lldap user that authelia will want to use will not exist. This will lead to the authelia container to be <strong>unhealthy and restarting</strong>.<br/>
-                So you will need to login to lldap on you <strong>lldap.youdomain.com</strong> (LLDAP_DOMAIN) and login with <strong>admin:password</strong> and then <strong>create the user you defined in your .env File.</strong><br/>
-                The user should have the <strong>group ldap_password_manager</strong>. And of course change the admin password. For futher information look into the
+                So you will need to login to lldap on you <strong>lldap.youdomain.com</strong> (LLDAP_DOMAIN) and login with <strong>admin:password</strong> and then <strong>create the user</strong> you defined in your <strong>.env</strong> File.<br/>
+                The secrets can be found in the variables: <strong>LLDAP_USERNAME</strong> and <strong>LLDAP_PASSWORD</strong>.
+                The user needs to have the <strong>group ldap_password_manager</strong> added after. And of course change the admin password. For further information look into the
                 <a href="https://github.com/lldap/lldap">lldap Repo</a>, very good project.</p>
             <h3>Database</h3>
             <code>
@@ -264,7 +265,7 @@
                 ./docker-cli.sh frontend up
             </code>
             <h3>Test if everything works</h3>
-            <p>You can visit app.youdomain.comj</p>
+            <p>You can visit app.youdomain.com</p>
         </section>
         <h1 id="localenv">Setup local environment</h1>
         <hr>
