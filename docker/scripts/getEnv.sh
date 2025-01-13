@@ -21,6 +21,7 @@ while IFS= read -r line; do
                   else
                       VAR_VALUE="$ENV_FILE_VAR_VALUE"
                   fi
+                  echo "$VAR_VALUE"
                   exit 0
         fi
     fi
