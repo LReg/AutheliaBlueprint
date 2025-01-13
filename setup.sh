@@ -2,7 +2,7 @@
 
 # Fehlerbehandlung: Beendet das Skript, wenn ein Befehl fehlschlägt
 set -e
-if [ "$#" -eq 0 ] || [ "$#" -gt 1 ]; then
+if [ "$#" -gt 1 ]; then
     echo "Usage: $0 [generateSecrets]"
     exit 1
 fi

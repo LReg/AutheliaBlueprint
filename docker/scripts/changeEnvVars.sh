@@ -20,15 +20,6 @@ while IFS= read -r line; do
         VAR_NAME=$(echo "$line" | cut -d'=' -f1)
         ENV_FILE_VAR_VALUE=$(echo "$line" | cut -d'=' -f2-)
 
-        #debug
-        if [ "$VAR_NAME" == "DOCKER_VOLUME_PATH" ]; then
-          if [ -n "${!VAR_NAME}" ]; then
-            echo "DOCKER_VOLUME_PATH=${!VAR_NAME} from envvars"
-          else
-            echo "DOCKER_VOLUME_PATH=$ENV_FILE_VAR_VALUE from .env"
-          fi
-        fi
-
         if [ -n "${!VAR_NAME}" ]; then
             VAR_VALUE="${!VAR_NAME}"
         else
