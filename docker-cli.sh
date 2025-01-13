@@ -31,26 +31,26 @@ if [ $LOCAL == true ]; then
 elif [ "$1" == "down" ] || [ "$1" == "build" ]; then
   # Build and down
 
-  if [ "$1" == "traefik" ]; then
+  if [ "$2" == "traefik" ]; then
     docker compose -f docker/composeFiles/traefik.docker-compose.yml --env-file ./.env "$1"
   fi
-  if [ "$1" == "auth" ]; then
+  if [ "$2" == "auth" ]; then
     docker compose -f docker/composeFiles/auth.docker-compose.yml --env-file ./.env "$1"
   fi
-  if [ "$1" == "frontend" ] || [ "$1" == "backend" ] || [ "$1" == "db" ]; then
+  if [ "$2" == "frontend" ] || [ "$2" == "backend" ] || [ "$2" == "db" ]; then
     docker compose -f docker/composeFiles/app.docker-compose.yml --env-file ./.env "$1" "$2"
   fi
 
 elif [ "$1" == "up" ]; then
   # up with some extra tags
 
-  if [ "$1" == "traefik" ]; then
+  if [ "$2" == "traefik" ]; then
     docker compose -f docker/composeFiles/traefik.docker-compose.yml --env-file ./.env "$1" -d --force-recreate
   fi
-  if [ "$1" == "auth" ]; then
+  if [ "$2" == "auth" ]; then
     docker compose -f docker/composeFiles/auth.docker-compose.yml --env-file ./.env "$1" -d --force-recreate --wait --wait-timeout 120
   fi
-  if [ "$1" == "frontend" ] || [ "$1" == "backend" ] || [ "$1" == "db" ]; then
+  if [ "$2" == "frontend" ] || [ "$2" == "backend" ] || [ "$2" == "db" ]; then
     docker compose -f docker/composeFiles/app.docker-compose.yml --env-file ./.env "$1" "$2" -d --force-recreate
   fi
 
