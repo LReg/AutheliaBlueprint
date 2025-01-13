@@ -9,7 +9,7 @@ fi
 
 ENV_FILE="./.env"
 
-if [ "$2" == "generateSecrets" ]; then
+if [ "$1" == "generateSecrets" ]; then
   GENERATE_SECRETS=true
 else
   GENERATE_SECRETS=false
