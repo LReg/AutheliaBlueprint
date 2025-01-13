@@ -70,13 +70,12 @@ jobs:
             git pull
             chmod +x ./use.sh
             ./use.sh express angular
-            cp .env.example .env
             chmod +x ./docker/scripts/unsetEmptyVars.sh
             source ./docker/scripts/unsetEmptyVars.sh ./.env
+            echo "${{ secrets.KEY }}" | sudo -S -E ./setup.sh generateSecrets
             ./docker-cli.sh down backend 
             ./docker-cli.sh down db 
             ./docker-cli.sh down frontend 
-            echo "${{ secrets.KEY }}" | sudo -S -E ./setup.sh generateSecrets
             ./docker-cli.sh build backend 
             ./docker-cli.sh build frontend 
             ./docker-cli.sh up backend 
