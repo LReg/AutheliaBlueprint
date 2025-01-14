@@ -3,18 +3,19 @@
 # Fehlerbehandlung: Beendet das Skript, wenn ein Befehl fehlschlägt
 set -e
 if [ "$#" -gt 1 ]; then
-    echo "Usage: $0 [generateSecrets]"
+    echo "Usage: $0 [init]"
     exit 1
 fi
 
 ENV_FILE="./.env"
 
-if [ "$1" == "generateSecrets" ]; then
-  GENERATE_SECRETS=true
+if [ "$1" == "init" ]; then
+  INIT=true
 else
-  GENERATE_SECRETS=false
+  INIT=false
 fi
 
+# create .env file if it does not exist
 if [ ! -f "$ENV_FILE" ]; then
     cp "./.env.example" "./.env"
     echo "Kopiere die server setup Datei nach .env"
@@ -25,26 +26,26 @@ if [ ! -f "$ENV_FILE" ]; then
     exit 1
 fi
 
-chmod +x ./docker/scripts/setSecrets.sh
-chmod +x ./docker/scripts/changeEnvVars.sh
-chmod +x ./docker/scripts/setJWTPrivateKey.sh
-chmod +x ./docker-cli.sh
-chmod +x ./docker/scripts/getEnv.sh
-
 DOCKER_PATH=$(./docker/scripts/getEnv.sh "$ENV_FILE" DOCKER_VOLUME_PATH)
 
-if [ "$GENERATE_SECRETS" == true ]; then
+# stuff that just needs to be done once
+if [ "$INIT" == true ]; then
+  chmod +x ./docker/scripts/setSecrets.sh
+  chmod +x ./docker/scripts/changeEnvVars.sh
+  chmod +x ./docker/scripts/setJWTPrivateKey.sh
+  chmod +x ./docker-cli.sh
+  chmod +x ./docker/scripts/getEnv.sh
   ./docker/scripts/setSecrets.sh "$ENV_FILE"
-fi
 
-mkdir -p "$DOCKER_PATH/volumes/authelia/config"
-./docker/scripts/changeEnvVars.sh "$ENV_FILE" "./docker/templateFiles/configuration.template.yml" "$DOCKER_PATH/volumes/authelia/config/configuration.yml"
-if [ "$GENERATE_SECRETS" == true ]; then
+  # generate jwt private key for authelia
   mkdir -p "$DOCKER_PATH/volumes/authelia/config/secrets/oidc/jwks"
   ./docker/scripts/setJWTPrivateKey.sh "$DOCKER_PATH/volumes/authelia/config/secrets/oidc/jwks/rsa.4096.key"
 fi
+
+# write authelia config file
+mkdir -p "$DOCKER_PATH/volumes/authelia/config"
+./docker/scripts/changeEnvVars.sh "$ENV_FILE" "./docker/templateFiles/configuration.template.yml" "$DOCKER_PATH/volumes/authelia/config/configuration.yml"
+
+# write mongo init file
 mkdir -p "$DOCKER_PATH/scripts"
 ./docker/scripts/changeEnvVars.sh "$ENV_FILE" "./docker/templateFiles/mongo-init.template.js" "$DOCKER_PATH/scripts/mongo-init.js"
-
-
-

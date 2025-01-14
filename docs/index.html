@@ -51,7 +51,7 @@
             <ol>
                 <li>A Server to run on</li>
                 <li>The Server needs docker installed, look up the Docker documentation for installation guides</li>
-                <li>And you need a domain for certificates. For the intended configuration you will need three,<br/> you can name the subdomains whatever you want tho. This is an example:
+                <li>And you need a domain for certificates. For the intended configuration you will need three,<br/> you can name the subdomains whatever you want. This is an example:
                    <ul>
                        <li>app.yourdomain.com -> for the application, used by the visitor</li>
                        <li>auth.yourdomain.com -> for authelia</li>
@@ -98,7 +98,7 @@
             </code>
             <h2>Push your changes to you repository</h2>
             <code>
-                git add frontend backend
+                git add .
             </code>
             <code>
                 git commit -m "init"
@@ -146,9 +146,10 @@
             <code>
                 chmod +x ./setup.sh
             </code>
-            <h2>Execute setup script with generateSecrets option</h2>
+            <h2>Execute setup script with init option</h2>
+            This will create your .env file and generate all secrets you need.
             <code>
-                ./setup.sh generateSecrets
+                sudo ./setup.sh init
             </code>
             <h2>Configure .env file OR set values as pipeline secrets</h2>
             <p>If you don't want secrets or configuration on your server, you can deliver all data via Pipeline secrets. It is explained <a href="AutheliaBlueprint#pipeline">here</a>.</p>
@@ -161,7 +162,7 @@
             <h3>General</h3>
             <pre>
                 APP_NAME=YourAppName : Used to avoid nameconflics, added for example to container names
-                DOCKER_VOLUME_PATH : where the app stores the docker volumes. Might me a good idea to not store in the repo
+                DOCKER_VOLUME_PATH : where the app stores the docker volumes. Might be a good idea to not store in the repo
 
                 # example for https://app.yourdomain.com
                 - DOMAIN=yourdomain
@@ -228,13 +229,13 @@
                 - SMTP_SKIP_TLS_VERIFY=false
             </pre>
             <h2>Rerun setup script to write template files</h2>
-            The configured variables will be written to the configuration files from Authelia and the Database.
-            You do not need generateSecrets anymore, because you already did that.
+            The configured variables need to be written to the configuration files from Authelia and the Database.
+            You do not need init anymore, because you already did that.
             The secrets are filled in in your .env file.
             <code>
                 sudo ./setup.sh
             </code>
-            Any time you change the .env file you will need to rerun this script. You will probably need <strong>sudo</strong> tho because the docker container volumes are owned by root.
+            Any time you change the .env file you will need to rerun this script. You will probably need <strong>sudo</strong> because the docker container volumes are owned by root.
             <h2>Start your services</h2>
             There is a script for easier starting and stopping of the services.
             <h3>Traefik</h3>
@@ -255,10 +256,11 @@
             </code>
             <h4>After the first startup</h4>
             <p>On the first startup the lldap user that authelia wants to use will not exist. This will lead to the authelia container to be <strong>unhealthy and restarting</strong>.<br/>
-                So you will need to login to lldap on you <strong>ldap.youdomain.com</strong> (LDAP_SUBDOMAIN) and login with <strong>admin:password</strong> and then <strong>create the user</strong> you defined in your <strong>.env</strong> File.<br/>
+                So you will need to login to lldap on you <strong>ldap.youdomain.com</strong> (LDAP_SUBDOMAIN) and login with <strong>admin:password</strong> and then <br/>
+                <strong>create the user</strong> you defined in your <strong>.env</strong> File.<br/>
                 The secrets can be found in the variables: <strong>LLDAP_USERNAME</strong> and <strong>LLDAP_PASSWORD</strong>.
-                The user needs to have the <strong>group ldap_password_manager</strong> added after. And of course change the admin password. For further information look into the
-                <a href="https://github.com/lldap/lldap">lldap Repo</a>, very good project.</p>
+                The user needs to have the <strong>group ldap_password_manager</strong> added after. And of course change the admin password.
+                For further information look into the <a href="https://github.com/lldap/lldap">lldap Repo</a>, very good project.</p>
             <h3>Database</h3>
             <code>
                 ./docker-cli.sh up db
