@@ -38,6 +38,7 @@ main {
 }
 main section {
     min-height: calc(100vh - 10rem);
+    width: calc(100vw - 20rem);
 }
 main ul, main ol {
     padding-left: 1rem;
@@ -77,4 +78,19 @@ code {
     font-size: 1.1em;
     border: 1px solid #ccc;
     margin: .3rem;
+}
+@media (max-width: 1000px) {
+    aside {
+        width: 10rem;
+    }
+    main {
+        left: 10rem;
+    }
+}
+
+pre {
+    max-width: calc(100vw - 20rem);
+    overflow-x: auto;
+    border: 1px solid rgba(138,138,138,0.21);
+    border-radius: 5px;
 }

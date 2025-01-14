@@ -183,58 +183,51 @@
             </pre>
             <h3>Traefik</h3>
             <pre>
-                # mainly to avoid name conflicts
-                # In case you already have a traefik container running you can change the names to the ones you have.
-                - TRAEFIK_NETWORK=YourTraefikNetwork
-                - TRAEFIK_CERT_RESOLVER=YourCertResolver
-                - TRAEFIK_ENTRYPOINT=YourHttpsEntryPoint
-                - TRAEFIK_EMAIL=YourEmail@gmail.com
-            </pre>
+# mainly to avoid name conflicts
+# In case you already have a traefik container running you can change the names to the ones you have.
+- TRAEFIK_NETWORK=YourTraefikNetwork
+- TRAEFIK_CERT_RESOLVER=YourCertResolver
+- TRAEFIK_ENTRYPOINT=YourHttpsEntryPoint
+- TRAEFIK_EMAIL=YourEmail@gmail.com</pre>
             <h3>Authelia</h3>
             <pre>
-                - AUTHELIA_RESET_PASSWORD_SECRET=super-secret-password : **generate secret**
-                - AUTHELIA_SESSION_REDIS_PASSWORD=redis-password : **generate secret**
-                - AUTHELIA_SESSION_SECRET=super-secret-session : **generate secret**
-            </pre>
+- AUTHELIA_RESET_PASSWORD_SECRET=super-secret-password : **generate secret**
+- AUTHELIA_SESSION_REDIS_PASSWORD=redis-password : **generate secret**
+- AUTHELIA_SESSION_SECRET=super-secret-session : **generate secret**</pre>
             <h3>LLDAP</h3>
             <pre>
-                - LLDAP_JWT_SECRET=super-secret-jwt : **generate secret**
-                - LLDAP_KEY_SEED=super-secret-seed : **generate secret**
-                - LLDAP_USERNAME=authelia : these are the credentials for the lldap user. You will need to add a user to lldap with these.
-                - LLDAP_PASSWORD=secret-password : **generate secret**
-            </pre>
+- LLDAP_JWT_SECRET=super-secret-jwt : **generate secret**
+- LLDAP_KEY_SEED=super-secret-seed : **generate secret**
+- LLDAP_USERNAME=authelia : these are the credentials for the lldap user. You will need to add a user to lldap with these.
+- LLDAP_PASSWORD=secret-password : **generate secret**</pre>
             <h3>Postgres (Authelia Storage)</h3>
             <pre>
-                - POSTGRES_PASSWORD=super-secret-password : **generate secret**
-                - POSTGRES_ENCRYPTION_KEY=super-secret-encryption-key : **generate secret**
-            </pre>
+- POSTGRES_PASSWORD=super-secret-password : **generate secret**
+- POSTGRES_ENCRYPTION_KEY=super-secret-encryption-key : **generate secret**</pre>
             <h3>OIDC</h3>
             <pre>
-                - OIDC_HMAC_SECRET=super-secret-hmac : **generate secret**
-                - OIDC_CLIENT_ID=your-client-id
-                - OIDC_CLIENT_NAME=your-client-name
-            </pre>
+- OIDC_HMAC_SECRET=super-secret-hmac : **generate secret**
+- OIDC_CLIENT_ID=your-client-id
+- OIDC_CLIENT_NAME=your-client-name</pre>
             <h3>Database</h3>
             <pre>
-                - DB_ROOT_USERNAME=root
-                - DB_ROOT_PASSWORD=root-password : **generate secret**
-                - DB_USERNAME=db-username
-                - DB_PASSWORD=db-password : **generate secret**
-            </pre>
+- DB_ROOT_USERNAME=root
+- DB_ROOT_PASSWORD=root-password : **generate secret**
+- DB_USERNAME=db-username
+- DB_PASSWORD=db-password : **generate secret**</pre>
 
             <h3>Mail SMTP</h3>
             <pre>
-                - SMTP_USERNAME=user
-                - SMTP_PASSWORD=password : **generate secret**
-                - SMTP_HOST=smtp://smtp.gmail.com:587 : don't forget to use protocol and port
-                - SMTP_SENDER=mail@app.de
+- SMTP_USERNAME=user
+- SMTP_PASSWORD=password : **generate secret**
+- SMTP_HOST=smtp://smtp.gmail.com:587 : don't forget to use protocol and port
+- SMTP_SENDER=mail@app.de
 
-                # In case you selfhost your mailserver there might be some problems with the certs. Then you can experiment with these values.
-                # When you have no problems leave them on false.
-                - SMTP_DISABLE_REQUIRE_TLS=false
-                - SMTP_DISABLE_STARTTLS=false
-                - SMTP_SKIP_TLS_VERIFY=false
-            </pre>
+# In case you selfhost your mailserver there might be some problems with the certs. Then you can experiment with these values.
+# When you have no problems leave them on false.
+- SMTP_DISABLE_REQUIRE_TLS=false
+- SMTP_DISABLE_STARTTLS=false
+- SMTP_SKIP_TLS_VERIFY=false</pre>
             <h2>Rerun setup script to write template files</h2>
             The configured variables need to be written to the configuration files from Authelia and the Database.
             You do not need init anymore, because you already did that.
@@ -305,9 +298,8 @@
             </code>
             In this file you will need to change <strong>two values</strong>:
             <pre>
-                - AUTH_DOMAIN=auth.yourdomain.com
-                - OIDC_CLIENT_ID=your-client-id
-            </pre>
+- AUTH_DOMAIN=auth.yourdomain.com
+- OIDC_CLIENT_ID=your-client-id</pre>
             These need to have the same value as in the .env file on your server.
             <h3>Starting the containers</h3>
             <code>
