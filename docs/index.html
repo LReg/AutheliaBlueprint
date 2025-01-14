@@ -84,10 +84,12 @@
             <h3>Frontend</h3>
             <ul>
                 <li>angular</li>
+                <li>vue</li>
             </ul>
             <h3>Backend</h3>
             <ul>
                 <li>go-fiber</li>
+                <li>express</li>
             </ul>
             <h2>Execute script with wanted Technologies</h2>
             Use the exact wording from the list, because it needs to find a folder with that name.
@@ -146,7 +148,7 @@
             </code>
             <h2>Execute setup script with generateSecrets option</h2>
             <code>
-                ./setup.sh server generateSecrets
+                ./setup.sh generateSecrets
             </code>
             <h2>Configure .env file OR set values as pipeline secrets</h2>
             <p>If you don't want secrets or configuration on your server, you can deliver all data via Pipeline secrets. It is explained <a href="AutheliaBlueprint#pipeline">here</a>.</p>
@@ -174,6 +176,7 @@
             <h3>Traefik</h3>
             <pre>
                 # mainly to avoid name conflicts
+                # In case you already have a traefik container running you can change the names to the ones you have.
                 - TRAEFIK_NETWORK=YourTraefikNetwork
                 - TRAEFIK_CERT_RESOLVER=YourCertResolver
                 - TRAEFIK_ENTRYPOINT=YourHttpsEntryPoint
@@ -224,17 +227,21 @@
                 - SMTP_DISABLE_STARTTLS=false
                 - SMTP_SKIP_TLS_VERIFY=false
             </pre>
-            <h2>Rerun setup script to write template files from Authelia and DB</h2>
+            <h2>Rerun setup script to write template files</h2>
+            The configured variables will be written to the configuration files from Authelia and the Database.
             You do not need generateSecrets anymore, because you already did that.
+            The secrets are filled in in your .env file.
             <code>
-                sudo ./setup.sh server
+                sudo ./setup.sh
             </code>
             Any time you change the .env file you will need to rerun this script. You will probably need <strong>sudo</strong> tho because the docker container volumes are owned by root.
             <h2>Start your services</h2>
             There is a script for easier starting and stopping of the services.
             <h3>Traefik</h3>
+            If you already have a traefik instance running you can skip this step.
+            Make sure you put in the correct names in the .env file.
             <code>
-                ./docker-cli.sh traefik up
+                ./docker-cli.sh up traefik
             </code>
             <h4>Error</h4>
             You might get an error Message because the network Traefik wants to use does not exist like: "network YourTraefikNetwork declared as external, but could not be found"
@@ -244,25 +251,25 @@
             </code>
             <h3>Authelia and related stuff</h3>
             <code>
-                ./docker-cli.sh auth up
+                ./docker-cli.sh up auth
             </code>
             <h4>After the first startup</h4>
-            <p>On the first startup the lldap user that authelia will want to use will not exist. This will lead to the authelia container to be <strong>unhealthy and restarting</strong>.<br/>
-                So you will need to login to lldap on you <strong>lldap.youdomain.com</strong> (LLDAP_DOMAIN) and login with <strong>admin:password</strong> and then <strong>create the user</strong> you defined in your <strong>.env</strong> File.<br/>
+            <p>On the first startup the lldap user that authelia wants to use will not exist. This will lead to the authelia container to be <strong>unhealthy and restarting</strong>.<br/>
+                So you will need to login to lldap on you <strong>ldap.youdomain.com</strong> (LDAP_SUBDOMAIN) and login with <strong>admin:password</strong> and then <strong>create the user</strong> you defined in your <strong>.env</strong> File.<br/>
                 The secrets can be found in the variables: <strong>LLDAP_USERNAME</strong> and <strong>LLDAP_PASSWORD</strong>.
                 The user needs to have the <strong>group ldap_password_manager</strong> added after. And of course change the admin password. For further information look into the
                 <a href="https://github.com/lldap/lldap">lldap Repo</a>, very good project.</p>
             <h3>Database</h3>
             <code>
-                ./docker-cli.sh db up
+                ./docker-cli.sh up db
             </code>
             <h3>Backend</h3>
             <code>
-                ./docker-cli.sh backend up
+                ./docker-cli.sh up backend
             </code>
             <h3>Frontend</h3>
             <code>
-                ./docker-cli.sh frontend up
+                ./docker-cli.sh up frontend
             </code>
             <h3>Test if everything works</h3>
             <p>You can visit app.youdomain.com</p>
@@ -270,6 +277,55 @@
         <h1 id="localenv">Setup local environment</h1>
         <hr>
         <section>
+            The idea is that you will use the authelia instance from your server environment. This way you only need database, frontend and backend locally.
+            <h2>Clone your repository</h2>
+            <code>
+                git clone git@github.com:username/repo.git
+            </code>
+            <code>
+                cd my-repo
+            </code>
+            <h2>DB and Backend</h2>
+            For the database and backend it is planned to run them with docker locally. This makes spreading of environmentvariables easy.
+            The .env file you need for that is already provided.
+            If you rather dont't want to run the backend with docker it is usually not hard to provide the environment variables in another way.
+            You can lookup the needed ones in the docker-compose file: docker/composeFiles/local.docker-compose.yml
+            <h3>Configuration</h3>
+            <code>
+                cp .env.local .env
+            </code>
+            In this file you will need to change <strong>two values</strong>:
+            <pre>
+                - AUTH_DOMAIN=auth.yourdomain.com
+                - OIDC_CLIENT_ID=your-client-id
+            </pre>
+            These need to have the same value as in the .env file on your server.
+            <h3>Starting the containers</h3>
+            <code>
+                chmod +x ./docker-cli.sh
+                ./docker-cli.sh up db local
+                ./docker-cli.sh up backend local
+            </code>
+            <h2>Frontend</h2>
+            Running the frontend locally in a docker container usually does not make sense. So you will need to run it with a classic approach like npm.
+            <h3>Configuration</h3>
+            The different frontend Frameworks treat their environment variable delivery differently.
+            But what stays the same is that you will need to change the <strong>AuthDomain</strong> and the <strong>OIDCClientId</strong>.
+            I will provide a short explanation for the different frontend technologies.
+            <h4>Angular</h4>
+            Change the values in frontend/src/environments/environment.ts
+            <h4>Vue</h4>
+            <code>
+                cp frontend/.env.example frontend/.env
+            </code>
+            Then change the values in frontend/.env
+            <h3>Start the application</h3>
+            Starting the applications also works different. For now all frontend technologies are npm based so the approach is the same.
+            <code>
+                cd frontend
+                npm install
+                npm run start
+            </code>
         </section>
         <h1 id="pipeline">Pipeline configuration</h1>
         <hr>
