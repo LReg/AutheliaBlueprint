@@ -26,7 +26,6 @@ if [ ! -f "$ENV_FILE" ]; then
     exit 1
 fi
 
-DOCKER_PATH=$(./docker/scripts/getEnv.sh "$ENV_FILE" DOCKER_VOLUME_PATH)
 
 # stuff that just needs to be done once
 if [ "$INIT" == true ]; then
@@ -35,6 +34,7 @@ if [ "$INIT" == true ]; then
   chmod +x ./docker/scripts/setJWTPrivateKey.sh
   chmod +x ./docker-cli.sh
   chmod +x ./docker/scripts/getEnv.sh
+  DOCKER_PATH=$(./docker/scripts/getEnv.sh "$ENV_FILE" DOCKER_VOLUME_PATH)
   ./docker/scripts/setSecrets.sh "$ENV_FILE"
 
   # generate jwt private key for authelia
@@ -42,6 +42,7 @@ if [ "$INIT" == true ]; then
   ./docker/scripts/setJWTPrivateKey.sh "$DOCKER_PATH/volumes/authelia/config/secrets/oidc/jwks/rsa.4096.key"
 fi
 
+DOCKER_PATH=$(./docker/scripts/getEnv.sh "$ENV_FILE" DOCKER_VOLUME_PATH)
 # write authelia config file
 mkdir -p "$DOCKER_PATH/volumes/authelia/config"
 ./docker/scripts/changeEnvVars.sh "$ENV_FILE" "./docker/templateFiles/configuration.template.yml" "$DOCKER_PATH/volumes/authelia/config/configuration.yml"
