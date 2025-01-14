@@ -72,10 +72,17 @@
                 git clone https://github.com/my-name/my-repo.git
             </code>
             <code>
-                cd /path/to/my/repo
+                cd my-repo
             </code>
             <h2>Copy the latest Release in your Repository</h2>
-
+            <h3>Windows Powershell</h3>
+            <code>
+                Invoke-WebRequest -Uri "https://github.com/LReg/AutheliaBlueprint/archive/refs/tags/0.0.8.zip" -OutFile "AutheliaBlueprint.zip"; Expand-Archive -Path "AutheliaBlueprint.zip" -DestinationPath "temp" -Force; Move-Item -Path "temp/*/*" -Destination "."; Remove-Item -Recurse -Force "temp"; Remove-Item "AutheliaBlueprint.zip"
+            </code>
+            <h3>Unix (with curl)</h3>
+            <code>
+                curl -L -o AutheliaBlueprint.zip https://github.com/LReg/AutheliaBlueprint/archive/refs/tags/0.0.8.zip && unzip AutheliaBlueprint.zip -d temp && shopt -s dotglob && mv temp/*/* ./ && rm -r temp AutheliaBlueprint.zip
+            </code>
             <h2>Give execution rights to script</h2>
             <code>
                 chmod +x ./use.sh
