@@ -12,7 +12,7 @@ services:
       - 'traefik.http.routers.${APP_NAME}-router-authelia.entrypoints=${TRAEFIK_ENTRYPOINT}'
       - 'traefik.http.routers.${APP_NAME}-router-authelia.tls=true'
       - 'traefik.http.routers.${APP_NAME}-router-authelia.tls.certresolver=${TRAEFIK_CERT_RESOLVER}'
-      - 'traefik.http.middlewares.authelia-${APP_NAME}.forwardauth.address=http://authelia:9091/api/verify?rd=https://${AUTH_SUBDOMAIN}.${DOMAIN}.${D_ENDING}'
+      - 'traefik.http.middlewares.authelia-${APP_NAME}.forwardauth.address=http://${APP_NAME}-authelia:9091/api/verify?rd=https://${AUTH_SUBDOMAIN}.${DOMAIN}.${D_ENDING}'
       - 'traefik.http.middlewares.authelia-${APP_NAME}.forwardauth.trustForwardHeader=true'
       - 'traefik.http.middlewares.authelia-${APP_NAME}.forwardauth.authResponseHeaders=Remote-User,Remote-Groups,Remote-Name,Remote-Email'
     expose:
