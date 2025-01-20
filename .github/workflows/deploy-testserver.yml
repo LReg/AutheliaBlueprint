@@ -2,7 +2,7 @@ name: redeploy app
 on:
   push:
     branches:
-      - main
+      - tst
   workflow_dispatch:
 jobs:
   build:
