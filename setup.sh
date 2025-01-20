@@ -43,7 +43,7 @@ if [ "$INIT" == true ]; then
   chmod +x ./docker-cli.sh
   chmod +x ./docker/scripts/getEnv.sh
   ./docker/scripts/setSecrets.sh "$ENV_FILE"
-  sed -i "s/!VSP/$VSP"/ "$ENV_FILE"
+  sed -i "s/!VSP/$VSP/" "$ENV_FILE"
 
   # generate jwt private key for authelia
   DOCKER_PATH=$(./docker/scripts/getEnv.sh "$ENV_FILE" DOCKER_VOLUME_PATH)
