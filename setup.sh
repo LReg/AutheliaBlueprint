@@ -18,7 +18,7 @@ else
 fi
 
 # if no .env file exists and we are not in init mode, exit
-if [ ! -f "$ENV_FILE" ] && "$INIT" == false; then
+if [ ! -f "$ENV_FILE" ] && [ "$INIT" == false ]; then
     echo "Die Datei $ENV_FILE existiert nicht. Please use ./setup.sh init <volume_storage_path>."
     exit 1
 fi
