@@ -29,4 +29,4 @@ while IFS= read -r line; do
     fi
 done < "$ENV_FILE"
 
-echo "Konfigurationsdatei $DESTINATION_FILE wurde erfolgreich aktualisiert."
+echo "The file $DESTINATION_FILE has successfully been written."

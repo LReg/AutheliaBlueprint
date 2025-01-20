@@ -31,4 +31,4 @@ while IFS= read -r line; do
     fi
 done < "$ENV_FILE"
 
-echo "Secrets wurden in die Datei $ENV_FILE geschrieben."
+echo "Secrets have successfully been written to  $ENV_FILE."

@@ -26,14 +26,13 @@ fi
 # create .env file if it does not exist
 if [ ! -f "$ENV_FILE" ] && [ "$INIT" == true ]; then
     cp "./.env.example" "./.env"
-    echo "Kopiere die server setup Datei nach .env"
+    echo "Copy .env.example to  .env"
 fi
 
 if [ ! -f "$ENV_FILE" ]; then
-    echo "Die Datei $ENV_FILE existiert nicht."
+    echo "The file $ENV_FILE does not exsist."
     exit 1
 fi
-
 
 # stuff that just needs to be done once
 if [ "$INIT" == true ]; then

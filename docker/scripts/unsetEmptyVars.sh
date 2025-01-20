@@ -14,7 +14,7 @@ fi
 ENV_FILE="$1"
 LINE_NUMBER=0
 
-echo "Unsetting empty variables in $ENV_FILE"
+echo "Unsetting empty environment-variables that exist in  $ENV_FILE"
 
 while IFS= read -r line; do
     LINE_NUMBER=$((LINE_NUMBER+1))
