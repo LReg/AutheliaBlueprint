@@ -34,11 +34,12 @@ main {
     position: absolute;
     top: 4rem;
     left: 15rem;
+    right: 0;
     padding: 2rem;
 }
 main section {
     min-height: calc(100vh - 10rem);
-    width: calc(100vw - 20rem);
+    width: 100%;
 }
 main ul, main ol {
     padding-left: 1rem;
@@ -79,6 +80,11 @@ code {
     border: 1px solid #ccc;
     margin: .3rem;
 }
+pre {
+    overflow-x: auto;
+    border: 1px solid rgba(138,138,138,0.21);
+    border-radius: 5px;
+}
 @media (max-width: 1000px) {
     aside {
         width: 10rem;
@@ -88,9 +94,27 @@ code {
     }
 }
 
-pre {
-    max-width: calc(100vw - 20rem);
-    overflow-x: auto;
-    border: 1px solid rgba(138,138,138,0.21);
-    border-radius: 5px;
+@media (max-width: 800px) {
+    aside {
+        width: 100%;
+        right: 0;
+        height: 5rem;
+        flex-direction: row;
+        overflow-x: auto;
+        overflow-y: hidden;
+    }
+
+    aside a {
+        height: 3rem;
+        flex-shrink: 0;
+        width: fit-content;
+    }
+    main {
+        top: 8rem;
+        left: 0;
+    }
+    nav a {
+        font-size: 1em;
+    }
 }
+
