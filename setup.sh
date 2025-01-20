@@ -2,21 +2,29 @@
 
 # Fehlerbehandlung: Beendet das Skript, wenn ein Befehl fehlschlägt
 set -e
-if [ "$#" -gt 1 ]; then
-    echo "Usage: $0 [init]"
-    exit 1
+if [ "$#" == 1 ] || [ "$#" -gt 2 ]; then
+  echo "Usage: $0 [init <volume_storage_path>]"
+  exit 1
 fi
 
 ENV_FILE="./.env"
 
 if [ "$1" == "init" ]; then
   INIT=true
+  # Volume_storage_path
+  VSP="$2"
 else
   INIT=false
 fi
 
+# if no .env file exists and we are not in init mode, exit
+if [ ! -f "$ENV_FILE" ] && "$INIT" == false; then
+    echo "Die Datei $ENV_FILE existiert nicht. Please use ./setup.sh init <volume_storage_path>."
+    exit 1
+fi
+
 # create .env file if it does not exist
-if [ ! -f "$ENV_FILE" ]; then
+if [ ! -f "$ENV_FILE" ] && [ "$INIT" == true ]; then
     cp "./.env.example" "./.env"
     echo "Kopiere die server setup Datei nach .env"
 fi
@@ -34,10 +42,11 @@ if [ "$INIT" == true ]; then
   chmod +x ./docker/scripts/setJWTPrivateKey.sh
   chmod +x ./docker-cli.sh
   chmod +x ./docker/scripts/getEnv.sh
-  DOCKER_PATH=$(./docker/scripts/getEnv.sh "$ENV_FILE" DOCKER_VOLUME_PATH)
   ./docker/scripts/setSecrets.sh "$ENV_FILE"
+  sed -i "s/!VSP/$VSP" "$ENV_FILE"
 
   # generate jwt private key for authelia
+  DOCKER_PATH=$(./docker/scripts/getEnv.sh "$ENV_FILE" DOCKER_VOLUME_PATH)
   mkdir -p "$DOCKER_PATH/volumes/authelia/config/secrets/oidc/jwks"
   ./docker/scripts/setJWTPrivateKey.sh "$DOCKER_PATH/volumes/authelia/config/secrets/oidc/jwks/rsa.4096.key"
 fi
