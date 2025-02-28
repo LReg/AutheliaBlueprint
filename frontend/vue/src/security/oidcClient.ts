@@ -2,6 +2,7 @@ import {environment} from "@/environment/environment.ts";
 import {Log, User, UserManager, type UserManagerSettings} from "oidc-client-ts";
 import {ref, type Ref} from "vue";
 import router from "@/router";
+import type {NavigationGuardNext, RouteLocationNormalized, RouteLocationNormalizedLoaded} from "vue-router";
 
 Log.setLogger(console)
 window.location.hash = decodeURIComponent(window.location.hash);
@@ -43,7 +44,7 @@ export const logout = async () => {
     return await userManager.signoutRedirect();
 };
 
-export const guardLoggedIn =  (to, from, next) => {
+export const guardLoggedIn =  (to: RouteLocationNormalized, from: RouteLocationNormalizedLoaded, next: NavigationGuardNext) => {
     userManager.getUser().then((u) => {
         if (u) {
             user.value = u;
