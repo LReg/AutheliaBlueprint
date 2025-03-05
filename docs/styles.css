@@ -85,6 +85,11 @@ pre {
     border: 1px solid rgba(138,138,138,0.21);
     border-radius: 5px;
 }
+fieldset {
+    padding: .5rem;
+    border-radius: 10px;
+    background-color: rgba(23, 68, 236, 0.1);
+}
 @media (max-width: 1000px) {
     aside {
         width: 10rem;

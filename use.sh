@@ -25,7 +25,7 @@ for dir in ./frontend/*/; do
     fi
 done
 
-cp -r  "./frontend/$2"/* ./frontend
+cp -r  "./frontend/$2"/. ./frontend
 
 rm -rf "./frontend/$2"
 
@@ -35,6 +35,6 @@ for dir in ./backend/*/; do
     fi
 done
 
-cp -r  "./backend/$1"/* ./backend
+cp -r  "./backend/$1"/. ./backend
 
 rm -rf "./backend/$1"
