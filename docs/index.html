@@ -318,7 +318,11 @@ DOCKER_VOLUME_PATH : where the app stores the docker volumes. Might be a good id
         <h3>Starting the containers</h3>
         <code>
             chmod +x ./docker-cli.sh
+        </code>
+        <code>
             ./docker-cli.sh up db local
+        </code>
+        <code>
             ./docker-cli.sh up backend local
         </code>
         <h2>Frontend</h2>
@@ -338,13 +342,143 @@ DOCKER_VOLUME_PATH : where the app stores the docker volumes. Might be a good id
         Starting the applications also works different. For now all frontend technologies are npm based so the approach is the same.
         <code>
             cd frontend
+        </code>
+        <code>
             npm install
+        </code>
+        <code>
             npm run start
         </code>
     </section>
     <h1 id="pipeline">Pipeline configuration</h1>
     <hr>
     <section>
+
+
+
+        Before you start with the configuration of a pipeline it is recommended to have the serverside setup done with a .env file first. This is explained <a href="AutheliaBlueprint#serverenv">here</a>.
+
+
+        The examples will be unspecific for the pipeline provider. But the general idea is the same.
+
+
+        You can find an <strong>example Github Actions pipeline</strong> <a href="https://github.com/LReg/AutheliaBlueprint/tree/main/.github/EXAMPLE-PIPELINE.yml">here</a>.
+
+
+        <h2>Responsibilities of the pipeline</h2>
+
+
+        <ul>
+
+
+            <li>Deliver <strong>environment variables</strong> in a secure way</li>
+
+
+            <li><strong>Write</strong> possible changes in these values to some <strong>configuration files</strong></li>
+
+
+            <li>Make a <strong>build</strong> on the server</li>
+
+
+            <li><strong>Restart</strong> the containers</li>
+
+
+        </ul>
+
+
+        <h2>Delivering Environment Variables</h2>
+
+
+        Given an <strong>SSH</strong> Connection to your technical user and <strong>environment variables set</strong> to the <strong>exact names of the ones in the .env file</strong>.<br/>
+
+
+        Then the Blueprint is designed to <strong>override</strong> the value you provided in the .env file with the environment variable.</br>
+
+
+        The Value will <strong>not be written in the .env file</strong> but only used for the current session.
+
+
+        <h2>Write configuration files</h2>
+
+
+        As mentioned in the <a href="AutheliaBlueprint#serverenv">server environment</a> changing the configuration values required to write amongst other the authelia configuration file.
+
+
+        To do so the ./setup.sh script needs to run with sudo.
+
+
+        <code>
+
+
+            sudo ./setup.sh
+
+
+        </code>
+
+
+        <h2>Make a build on the server</h2>
+
+
+        Now everything is prepared to make a build. You can use the ./docker-cli.sh script to do so.
+
+
+        <code>./docker-cli.sh build frontend</code>
+
+
+        <code>./docker-cli.sh build backend</code>
+
+
+        <h2>Restart the containers</h2>
+
+
+        Depending on the pipeline and changes you can now restart your containers. If there is no relevant change to the auth or traefik you can leave them out.
+
+
+        <code>./docker-cli.sh down auth</code>
+
+
+        <code>./docker-cli.sh down traefik</code>
+
+
+        <code>./docker-cli.sh down frontend</code>
+
+
+        <code>./docker-cli.sh down backend</code>
+
+
+        <code>./docker-cli.sh down db</code>
+
+
+        <code>./docker-cli.sh up auth</code>
+
+
+        <code>./docker-cli.sh up traefik</code>
+
+
+        <code>./docker-cli.sh up frontend</code>
+
+
+        <code>./docker-cli.sh up backend</code>
+
+
+        <code>./docker-cli.sh up db</code>
+
+
+        <h2>Special case: empty environment variables</h2>
+
+
+        If you hand over all environment variables as in the <a href="https://github.com/LReg/AutheliaBlueprint/tree/main/.github/EXAMPLE-PIPELINE.yml">Example Pipeline</a> then not setting a secret will lead to them being emtpy.
+
+
+        There is a script prepared to clear all empty variables.
+
+
+        <code>source ./docker/scripts/unsetEmptyVars.sh ./.env</code>
+
+
+        It needs to be called with source because it needs to change the environment variables of the current session.
+
+
     </section>
 </main>
 <aside>
