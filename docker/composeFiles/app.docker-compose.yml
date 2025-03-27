@@ -18,7 +18,8 @@ services:
       - 'traefik.http.routers.${APP_NAME}-backend.entrypoints=${TRAEFIK_ENTRYPOINT}'
       - 'traefik.http.routers.${APP_NAME}-backend.tls=true'
       - 'traefik.http.routers.${APP_NAME}-backend.tls.certresolver=${TRAEFIK_CERT_RESOLVER}'
-      - 'traefik.http.routers.${APP_NAME}-backend.middlewares=authelia-${APP_NAME}@docker'
+      # uncomment if you want to use the authelia middleware to protect the backend, instead of auth middleware in backend
+      #- 'traefik.http.routers.${APP_NAME}-backend.middlewares=authelia-${APP_NAME}@docker'
       - "traefik.http.routers.${APP_NAME}-backend.middlewares=${APP_NAME}-appStripPrefix"
       - "traefik.http.middlewares.${APP_NAME}-appStripPrefix.stripprefix.prefixes=/api"
     restart: always

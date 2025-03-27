@@ -5,17 +5,17 @@ set -e
 chmod +x ./setup.sh
 
 if [ "$#" -ne 2 ]; then
-    echo "Usage: $0 <backend-technologie> <frontend-technologie>"
+    echo "Usage: $0 <backend-technology> <frontend-technology>"
     exit 1
 fi
 
 if [ ! -d "./backend/$1" ]; then
-    echo "The Technologie $1 is not supported yet."
+    echo "The Technology $1 is not supported yet."
     exit 1
 fi
 
 if [ ! -d "./frontend/$2" ]; then
-    echo "The Technologie $2 not supported yet."
+    echo "The Technology $2 not supported yet."
     exit 1
 fi
 

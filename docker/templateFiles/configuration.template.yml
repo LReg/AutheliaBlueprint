@@ -76,6 +76,7 @@ identity_providers:
         public: true
         client_secret: null
         consent_mode: 'auto'
+        pre_configured_consent_duration: '1 month'
         authorization_policy: 'one_factor'
         redirect_uris:
           - 'https://$APP_SUBDOMAIN.$DOMAIN.$D_ENDING/$CALLBACK_PATH'
