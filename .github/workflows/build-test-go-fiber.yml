@@ -1,0 +1,17 @@
+name: Build go-fiber on PR
+
+on:
+  workflow_dispatch:
+  pull_request:
+    branches: 
+    - main
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: Build the Docker image
+      run: chmod +x ./use.sh && ./use.sh go-fiber angular && cp .env.local .env && ./docker-cli.sh build backend

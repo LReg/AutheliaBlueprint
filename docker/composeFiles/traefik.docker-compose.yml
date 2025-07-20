@@ -1,0 +1,43 @@
+services:
+  traefik:
+    image: traefik:3.1.2
+    container_name: ${APP_NAME}-traefik
+    restart: always
+    ports:
+      - "80:80"
+      - "443:443"
+    command:
+      #API Settings
+      #Provider settings
+      - "--providers.docker=true"
+      - "--providers.docker.exposedbydefault=false"
+      - "--providers.docker.network=${TRAEFIK_NETWORK}"
+      #EntryPaintSettings
+      - "--entrypoints.${APP_NAME}-http-entrypoint.address=:80"
+      - "--entrypoints.${APP_NAME}-http-entrypoint.http.redirections.entryPoint.to=${TRAEFIK_ENTRYPOINT}"
+      - "--entrypoints.${APP_NAME}-http-entrypoint.http.redirections.entryPoint.scheme=https"
+      - "--entrypoints.${TRAEFIK_ENTRYPOINT}.address=:443"
+      #Certifficate Settings
+      - "--certificatesresolvers.${TRAEFIK_CERT_RESOLVER}.acme.tlschallenge=true"
+      - "--certificatesresolvers.${TRAEFIK_CERT_RESOLVER}.acme.email=${TRAEFIK_EMAIL}"
+      - "--certificatesresolvers.${TRAEFIK_CERT_RESOLVER}.acme.storage=/acme/acme.json"
+
+      #Logging
+      - '--log=true'
+      - '--log.level=DEBUG'
+
+    labels:
+      - "traefik.enable=true"
+
+    volumes:
+      #That Traefik can listen to the Docker events
+      - /var/run/docker.sock:/var/run/docker.sock
+      - "${DOCKER_VOLUME_PATH}/volumes/traefik/acme-volume:/acme"
+    networks:
+      - TraefikNetwork
+
+
+networks:
+  TraefikNetwork:
+    external: true
+    name: ${TRAEFIK_NETWORK}

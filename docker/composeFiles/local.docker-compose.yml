@@ -1,0 +1,27 @@
+version: '3'
+
+services:
+  db:
+    image: mongo:latest
+    container_name: ${APP_NAME}-mongodb
+    restart: always
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${DB_ROOT_USERNAME}
+      MONGO_INITDB_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
+      MONGO_INITDB_DATABASE: public
+    volumes:
+      - ../volumes/database:/data/db
+      - ../scripts/mongo-init-local.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
+
+  backend:
+    pid: host
+    container_name: ${APP_NAME}-backend
+    ports:
+      - "8080:8080"
+    build:
+      context: ../../backend
+      dockerfile: Dockerfile
+    environment:
+      - AUTH_DOMAIN=${AUTH_DOMAIN}
+      - OIDC_CLIENT_ID=${OIDC_CLIENT_ID}
+      - MONGO_URI=mongodb://${DB_USERNAME}:${DB_PASSWORD}@db:27017/public?authSource=public

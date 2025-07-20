@@ -1,0 +1,70 @@
+name: restart authelia
+on:
+  workflow_dispatch:
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    env:
+      APP_NAME: ${{ secrets.APP_NAME }}
+      DOCKER_VOLUME_PATH: ${{ secrets.DOCKER_VOLUME_PATH }}
+
+      DOMAIN: ${{ secrets.DOMAIN }}
+      D_ENDING: ${{ secrets.D_ENDING }}
+
+      APP_SUBDOMAIN: ${{ secrets.APP_SUBDOMAIN }}
+      AUTH_SUBDOMAIN: ${{ secrets.AUTH_SUBDOMAIN }}
+      LDAP_SUBDOMAIN: ${{ secrets.LDAP_SUBDOMAIN }}
+
+      CALLBACK_PATH: ${{ secrets.CALLBACK_PATH }}
+
+      TRAEFIK_NETWORK: ${{ secrets.TRAEFIK_NETWORK }}
+      TRAEFIK_CERT_RESOLVER: ${{ secrets.TRAEFIK_CERT_RESOLVER }}
+      TRAEFIK_ENTRYPOINT: ${{ secrets.TRAEFIK_ENTRYPOINT }}
+      TRAEFIK_EMAIL: ${{ secrets.TRAEFIK_EMAIL }}
+
+      AUTHELIA_RESET_PASSWORD_SECRET: ${{ secrets.AUTHELIA_RESET_PASSWORD_SECRET }}
+      AUTHELIA_SESSION_REDIS_PASSWORD: ${{ secrets.AUTHELIA_SESSION_REDIS_PASSWORD }}
+      AUTHELIA_SESSION_SECRET: ${{ secrets.AUTHELIA_SESSION_SECRET }}
+
+      LLDAP_JWT_SECRET: ${{ secrets.LLDAP_JWT_SECRET }}
+      LLDAP_KEY_SEED: ${{ secrets.LLDAP_KEY_SEED }}
+      LLDAP_USERNAME: ${{ secrets.LLDAP_USERNAME }}
+      LLDAP_PASSWORD: ${{ secrets.LLDAP_PASSWORD }}
+
+      POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
+      POSTGRES_ENCRYPTION_KEY: ${{ secrets.POSTGRES_ENCRYPTION_KEY }}
+
+      OIDC_HMAC_SECRET: ${{ secrets.OIDC_HMAC_SECRET }}
+      OIDC_CLIENT_ID: ${{ secrets.OIDC_CLIENT_ID }}
+      OIDC_CLIENT_NAME: ${{ secrets.OIDC_CLIENT_NAME }}
+
+      DB_ROOT_USERNAME: ${{ secrets.DB_ROOT_USERNAME }}
+      DB_ROOT_PASSWORD: ${{ secrets.DB_ROOT_PASSWORD }}
+      DB_USERNAME: ${{ secrets.DB_USERNAME }}
+      DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+
+      SMTP_USERNAME: ${{ secrets.SMTP_USERNAME }}
+      SMTP_PASSWORD: ${{ secrets.SMTP_PASSWORD }}
+      SMTP_HOST: ${{ secrets.SMTP_HOST }}
+      SMTP_SENDER: ${{ secrets.SMTP_SENDER }}
+      SMTP_DISABLE_REQUIRE_TLS: ${{ secrets.SMTP_DISABLE_REQUIRE_TLS }}
+      SMTP_DISABLE_STARTTLS: ${{ secrets.SMTP_DISABLE_STARTTLS }}
+      SMTP_SKIP_TLS_VERIFY: ${{ secrets.SMTP_SKIP_TLS_VERIFY }}
+
+    steps:
+      - name: executing remote ssh commands using password
+        uses: appleboy/ssh-action@v1.0.0
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USER }}
+          password: ${{ secrets.KEY }}
+          port: ${{ secrets.PORT }}
+          envs: APP_NAME, DOMAIN, D_ENDING, APP_SUBDOMAIN, AUTH_SUBDOMAIN, LDAP_SUBDOMAIN, CALLBACK_PATH, TRAEFIK_NETWORK, TRAEFIK_CERT_RESOLVER, TRAEFIK_ENTRYPOINT, TRAEFIK_EMAIL, AUTHELIA_RESET_PASSWORD_SECRET, AUTHELIA_SESSION_REDIS_PASSWORD, AUTHELIA_SESSION_SECRET, LLDAP_JWT_SECRET, LLDAP_KEY_SEED, LLDAP_USERNAME, LLDAP_PASSWORD, POSTGRES_PASSWORD, POSTGRES_ENCRYPTION_KEY, OIDC_HMAC_SECRET, OIDC_CLIENT_ID, OIDC_CLIENT_NAME, DB_ROOT_USERNAME, DB_ROOT_PASSWORD, DB_USERNAME, DB_PASSWORD, SMTP_USERNAME, SMTP_PASSWORD, SMTP_HOST, SMTP_SENDER, SMTP_DISABLE_REQUIRE_TLS, SMTP_DISABLE_STARTTLS, SMTP_SKIP_TLS_VERIFY, DOCKER_VOLUME_PATH
+          script: |
+            cd AutheliaBlueprint 
+            chmod +x ./docker/scripts/unsetEmptyVars.sh
+            source ./docker/scripts/unsetEmptyVars.sh ./.env
+            echo "${{ secrets.KEY }}" | sudo -S -E ./setup.sh
+            ./docker-cli.sh down auth 
+            ./docker-cli.sh up auth 

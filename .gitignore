@@ -24,3 +24,9 @@ go.work.sum
 .env
 docker/volumes/database
 docker/volumes/redis
+docker/volumes/authelia/config/configuration.yml
+docker/volumes/authelia/config/secrets/oidc/jwks/rsa.4096.key
+docker/scripts/local-mongo-init.js
+docker/scripts/local-init.js
+backend/node_modules
+backend/express/node_modules

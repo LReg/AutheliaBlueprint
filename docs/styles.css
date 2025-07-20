@@ -1,0 +1,125 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+body {
+    font-family: 'Roboto', sans-serif;
+    background-color: #f4f4f4;
+    color: #333;
+    line-height: 1.9;
+    font-size: 1.2em;
+}
+nav {
+    position: fixed;
+    z-index: 2;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-image: linear-gradient(to right, #bcc1e3, #bce2e3);
+}
+nav a {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #010d5d;
+    margin-right: 1rem;
+    cursor: pointer;
+    text-decoration: none;
+}
+main {
+    position: absolute;
+    top: 4rem;
+    left: 15rem;
+    right: 0;
+    padding: 2rem;
+}
+main section {
+    min-height: calc(100vh - 10rem);
+    width: 100%;
+}
+main ul, main ol {
+    padding-left: 1rem;
+}
+aside {
+    position: fixed;
+    top: 4rem;
+    left: 0;
+    width: 15rem;
+    background-color: #333;
+    height: calc(100vh - 4rem);
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: .5rem;
+}
+
+aside a {
+    padding: 0.5rem;
+    height: fit-content;
+    width: 100%;
+    color: white;
+    text-decoration: none;
+    background-color: #1c1c1c;
+    border-radius: 0.5rem;
+}
+
+aside a:hover {
+    background-color: #00168a;
+}
+
+code {
+    display: block;
+    background-color: #e7e7e7;
+    padding: 0 .7rem;
+    border-radius: 0.3rem;
+    font-size: 1.1em;
+    border: 1px solid #ccc;
+    margin: .3rem;
+}
+pre {
+    overflow-x: auto;
+    border: 1px solid rgba(138,138,138,0.21);
+    border-radius: 5px;
+}
+fieldset {
+    padding: .5rem;
+    border-radius: 10px;
+    background-color: rgba(23, 68, 236, 0.1);
+}
+@media (max-width: 1000px) {
+    aside {
+        width: 10rem;
+    }
+    main {
+        left: 10rem;
+    }
+}
+
+@media (max-width: 800px) {
+    aside {
+        width: 100%;
+        right: 0;
+        height: 5rem;
+        flex-direction: row;
+        overflow-x: auto;
+        overflow-y: hidden;
+    }
+
+    aside a {
+        height: 3rem;
+        flex-shrink: 0;
+        width: fit-content;
+    }
+    main {
+        top: 8rem;
+        left: 0;
+    }
+    nav a {
+        font-size: 1em;
+    }
+}
+

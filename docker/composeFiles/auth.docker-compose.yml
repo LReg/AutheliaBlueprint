@@ -1,0 +1,82 @@
+services:
+  authelia:
+    image: authelia/authelia
+    container_name: ${APP_NAME}-authelia
+    volumes:
+      - "${DOCKER_VOLUME_PATH}/volumes/authelia/config:/config"
+    networks:
+      - TraefikNetwork
+    labels:
+      - 'traefik.enable=true'
+      - 'traefik.http.routers.${APP_NAME}-router-authelia.rule=Host(`${AUTH_SUBDOMAIN}.${DOMAIN}.${D_ENDING}`)'
+      - 'traefik.http.routers.${APP_NAME}-router-authelia.entrypoints=${TRAEFIK_ENTRYPOINT}'
+      - 'traefik.http.routers.${APP_NAME}-router-authelia.tls=true'
+      - 'traefik.http.routers.${APP_NAME}-router-authelia.tls.certresolver=${TRAEFIK_CERT_RESOLVER}'
+      - 'traefik.http.middlewares.authelia-${APP_NAME}.forwardauth.address=http://${APP_NAME}-authelia:9091/api/verify?rd=https://${AUTH_SUBDOMAIN}.${DOMAIN}.${D_ENDING}'
+      - 'traefik.http.middlewares.authelia-${APP_NAME}.forwardauth.trustForwardHeader=true'
+      - 'traefik.http.middlewares.authelia-${APP_NAME}.forwardauth.authResponseHeaders=Remote-User,Remote-Groups,Remote-Name,Remote-Email'
+    expose:
+      - 9091
+    restart: always
+    environment:
+      - TZ=CET
+      - "AUTHELIA_ACCESS_CONTROL_DEFAULT_POLICY=deny"
+      - "X_AUTHELIA_CONFIG_FILTERS=template"
+
+  authelia-lldap:
+    image: lldap/lldap:stable
+    container_name: ${APP_NAME}-authelia-lldap
+    restart: always
+    networks:
+      - TraefikNetwork
+    expose:
+      - 17170
+      - 6360
+      - 3890
+    labels:
+      - 'traefik.enable=true'
+      - 'traefik.http.routers.${APP_NAME}-router-lldap.rule=Host(`${LDAP_SUBDOMAIN}.${DOMAIN}.${D_ENDING}`)'
+      - 'traefik.http.routers.${APP_NAME}-router-lldap.entrypoints=${TRAEFIK_ENTRYPOINT}'
+      - 'traefik.http.routers.${APP_NAME}-router-lldap.tls=true'
+      - 'traefik.http.routers.${APP_NAME}-router-lldap.tls.certresolver=${TRAEFIK_CERT_RESOLVER}'
+      - 'traefik.http.services.${APP_NAME}-service.loadbalancer.server.port=17170'
+    volumes:
+      - "${DOCKER_VOLUME_PATH}/volumes/lldap:/data"
+    environment:
+      - "LLDAP_JWT_SECRET=${LLDAP_JWT_SECRET}"
+      - "LLDAP_KEY_SEED=${LLDAP_KEY_SEED}"
+      - "LLDAP_LDAP_BASE_DN=dc=${DOMAIN},dc=${D_ENDING}"
+
+  authelia-postgres:
+    image: postgres
+    container_name: ${APP_NAME}-authelia-postgres
+    volumes:
+      - "${DOCKER_VOLUME_PATH}/volumes/authelia/postgres:/var/lib/mysql"
+    networks:
+      - TraefikNetwork
+    expose:
+      - 5432
+    restart: unless-stopped
+    environment:
+      - POSTGRES_DATABASE=authelia
+      - POSTGRES_USER=authelia
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - TZ=CET
+
+  redis:
+    image: redis:alpine
+    container_name: ${APP_NAME}-redis
+    volumes:
+      - "${DOCKER_VOLUME_PATH}/volumes/redis:/data"
+    networks:
+      - TraefikNetwork
+    expose:
+      - 6379
+    restart: unless-stopped
+    environment:
+      - TZ=CET
+
+networks:
+  TraefikNetwork:
+    external: true
+    name: ${TRAEFIK_NETWORK}

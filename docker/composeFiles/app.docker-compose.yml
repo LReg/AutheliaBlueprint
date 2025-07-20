@@ -1,0 +1,67 @@
+services:
+  backend:
+    pid: host
+    container_name: ${APP_NAME}-backend
+    build:
+      context: ../../backend
+      dockerfile: Dockerfile
+    environment:
+      # maybe consider to not go via internet instead use the internal network
+      - AUTH_DOMAIN=${AUTH_SUBDOMAIN}.${DOMAIN}.${D_ENDING}
+      - OIDC_CLIENT_ID=${OIDC_CLIENT_ID}
+      - MONGO_URI=mongodb://${DB_USERNAME}:${DB_PASSWORD}@${APP_NAME}-mongodb:27017/public?authSource=public
+    networks:
+        - TraefikNetwork
+    labels:
+      - 'traefik.enable=true'
+      - 'traefik.http.routers.${APP_NAME}-backend.rule=Host(`${APP_SUBDOMAIN}.${DOMAIN}.${D_ENDING}`) && PathPrefix(`/api`)'
+      - 'traefik.http.routers.${APP_NAME}-backend.entrypoints=${TRAEFIK_ENTRYPOINT}'
+      - 'traefik.http.routers.${APP_NAME}-backend.tls=true'
+      - 'traefik.http.routers.${APP_NAME}-backend.tls.certresolver=${TRAEFIK_CERT_RESOLVER}'
+      # uncomment if you want to use the authelia middleware to protect the backend, instead of auth middleware in backend
+      #- 'traefik.http.routers.${APP_NAME}-backend.middlewares=authelia-${APP_NAME}@docker'
+      - "traefik.http.routers.${APP_NAME}-backend.middlewares=${APP_NAME}-appStripPrefix"
+      - "traefik.http.middlewares.${APP_NAME}-appStripPrefix.stripprefix.prefixes=/api"
+    restart: always
+
+  db:
+    image: mongo:latest
+    container_name: ${APP_NAME}-mongodb
+    restart: always
+    expose:
+      - 27017
+    networks:
+      - TraefikNetwork
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${DB_ROOT_USERNAME}
+      MONGO_INITDB_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
+      MONGO_INITDB_DATABASE: ${DB_USERNAME}
+    volumes:
+      - "${DOCKER_VOLUME_PATH}/volumes/database:/data/db"
+      - "${DOCKER_VOLUME_PATH}/scripts/mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro"
+
+  frontend:
+    container_name: ${APP_NAME}-frontend
+    restart: always
+    build:
+      context: ../../frontend
+      dockerfile: Dockerfile
+      args:
+        - BASE_URL=https://${APP_SUBDOMAIN}.${DOMAIN}.${D_ENDING}
+        - API_URL=https://${APP_SUBDOMAIN}.${DOMAIN}.${D_ENDING}/api
+        - AUTH_URL=https://${AUTH_SUBDOMAIN}.${DOMAIN}.${D_ENDING}
+        - CLIENT_ID=${OIDC_CLIENT_ID}
+    networks:
+      - TraefikNetwork
+    labels:
+      - 'traefik.enable=true'
+      - 'traefik.http.routers.${APP_NAME}-frontend.rule=Host(`${APP_SUBDOMAIN}.${DOMAIN}.${D_ENDING}`)'
+      - 'traefik.http.routers.${APP_NAME}-frontend.entrypoints=${TRAEFIK_ENTRYPOINT}'
+      - 'traefik.http.routers.${APP_NAME}-frontend.tls=true'
+      - 'traefik.http.routers.${APP_NAME}-frontend.tls.certresolver=${TRAEFIK_CERT_RESOLVER}'
+
+
+networks:
+  TraefikNetwork:
+    external: true
+    name: ${TRAEFIK_NETWORK}

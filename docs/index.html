@@ -1,0 +1,494 @@
+<!doctype html>
+<html lang="de">
+<head>
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+    <meta charset="utf-8">
+    <title>Authelia Blueprint Documentation</title>
+    <base href="/">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="icon" type="image/x-icon" href="AutheliaBlueprint/favicon.ico">
+    <link rel="stylesheet" href="AutheliaBlueprint/styles.css">
+</head>
+<body>
+<nav>
+    <a href="AutheliaBlueprint">Authelia Blueprint Docs</a>
+</nav>
+<main>
+    <h1>Introduction</h1>
+    <hr>
+    <section>
+        <h2>What is this project?</h2>
+        <p>
+            This projects tries to deliver an easy and fast solution to setup your project and start developing after.
+            The Idea is to handle the complete configuration and authentication and be easy to configure without previous knowledge.
+        </p>
+        <h2>What does this project deliver?</h2>
+        <ul>
+            <li>A 3 Layer architecture</li>
+            <li>Production, local and optionally a dev environment</li>
+            <li>Authentication and User Management professionally handled by Authelia and lldap</li>
+            <li>https communication provided by traefik and LetsEntrypt</li>
+            <li>choose you own technologies for Front- and Backend</li>
+        </ul>
+        <h2>What type of project is this for?</h2>
+        <p>This project is meant for prototypes and applications for up to 5000 monthly active Users.</p>
+        <p>Because it is already dockerized, the path is paved to move to a bigger scaling.</p>
+    </section>
+    <h1 id="getstarted">Get Started</h1>
+    <hr>
+    <section>
+        To use the project you will have to complete these steps in the correct order.
+        <ol>
+            <li><a href="AutheliaBlueprint#pre">Check and apply prerequisites</a></li>
+            <li><a href="AutheliaBlueprint#choosetech">Choose your Technologies</a></li>
+            <li><a href="AutheliaBlueprint#serverenv">Setup server environment</a></li>
+            <li><a href="AutheliaBlueprint#localenv">Setup local environment</a></li>
+        </ol>
+    </section>
+    <h1 id="pre">Check and apply prerequisites</h1>
+    <hr>
+    <section>
+        <ol>
+            <li>A Server to run on</li>
+            <li>The Server needs docker installed, look up the Docker documentation for installation guides</li>
+            <li>And you need a domain for certificates. For the intended configuration you will need three,<br/> you can name the subdomains whatever you want. This is an example:
+                <ul>
+                    <li>app.yourdomain.com -> for the application, used by the visitor</li>
+                    <li>auth.yourdomain.com -> for authelia</li>
+                    <li>ldap.yourdomain.com -> for the usermanagement</li>
+                </ul>
+                They should all point to the Server IP with an A Record
+            </li>
+            <li>An E-Mail SMTP Server.</li>
+            <li>And for local development Docker Desktop is recommended</li>
+        </ol>
+    </section>
+    <h1 id="choosetech">Choose Your Wanted Technologies</h1>
+    <hr>
+    <section>
+        <h2>Create an Empty Repository</h2>
+        You can choose any Git Platform, but for GitHub there are already simple pipelines included.
+        Then navigate to your Repository
+        <code>
+            git clone https://github.com/my-name/my-repo.git
+        </code>
+        <code>
+            cd my-repo
+        </code>
+        <h2>Copy the latest Release in your Repository</h2>
+        <h3>Windows Powershell</h3>
+        <code>
+            Invoke-WebRequest -Uri "https://github.com/LReg/AutheliaBlueprint/archive/refs/tags/0.0.12.zip" -OutFile "AutheliaBlueprint.zip"; Expand-Archive -Path "AutheliaBlueprint.zip" -DestinationPath "temp" -Force; Move-Item -Path "temp/*/*" -Destination "."; Remove-Item -Recurse -Force "temp"; Remove-Item "AutheliaBlueprint.zip"
+        </code>
+        <h3>Unix (with curl)</h3>
+        <code>
+            curl -L -o AutheliaBlueprint.zip https://github.com/LReg/AutheliaBlueprint/archive/refs/tags/0.0.12.zip && unzip AutheliaBlueprint.zip -d temp && shopt -s dotglob && mv temp/*/* ./ && rm -r temp AutheliaBlueprint.zip
+        </code>
+        <h2>Give execution rights to script</h2>
+        <code>
+            chmod +x ./use.sh
+        </code>
+        <h2>Decide on Technologies from these Options</h2>
+        <h3>Frontend</h3>
+        <ul>
+            <li>angular</li>
+            <li>vue</li>
+        </ul>
+        <h3>Backend</h3>
+        <ul>
+            <li>go-fiber</li>
+            <li>express</li>
+        </ul>
+        <h2>Execute script with wanted Technologies</h2>
+        Use the exact wording from the list, because it needs to find a folder with that name.
+        <code>
+            ./use.sh [backend-technology] [frontend-technology]
+        </code>
+        <h2>Push your changes to you repository</h2>
+        <code>
+            git add .
+        </code>
+        <code>
+            git commit -m "init"
+        </code>
+        <code>
+            git push
+        </code>
+    </section>
+    <h1 id="serverenv">Setup server environment</h1>
+    <hr>
+    <section>
+        <fieldset>
+            <legend>Disclaimer</legend>
+            <p>This Guide uses a build on server and then run approach. For now this blueprint does not feature any docker registry involvement.</p>
+        </fieldset>
+        <h2>Log into your server via ssh</h2>
+        <code>
+            ssh root@your-server-ip
+        </code>
+        <h2>Create a technical user</h2>
+        Remember to replace my-technical-user with your desired username. And store your password in a safe place.
+        <code>
+            adduser my-technical-user
+        </code>
+        <code>
+            usermod -aG sudo my-technical-user
+        </code>
+        <code>
+            usermod -aG docker my-technical-user
+        </code>
+        <code>
+            su - my-technical-user
+        </code>
+        <h2>Gain Access to Repository</h2>
+        <p>If your repository is public you can skip this step. Else it is recommended to use an ssh key.</p>
+        <p><a target="_blank" href="https://docs.github.com/en/authentication/connecting-to-github-with-ssh/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent">Here</a> Github explains this process.</p>
+        <h2>Clone your Repository</h2>
+        <code>
+            git clone git@github.com:username/repo.git
+        </code>
+        <code>
+            cd my-repo
+        </code>
+        <h2>Give execution rights to setup script</h2>
+        <code>
+            chmod +x ./setup.sh
+        </code>
+        <h2>Execute setup script with init option</h2>
+        This will create your .env file and generate all secrets you need.
+        <code>
+            sudo ./setup.sh init path/to/docker/volumes
+        </code>
+        <h2>Configure .env file OR set values as pipeline secrets</h2>
+        <p>If you don't want secrets or configuration on your server, you can deliver all data via Pipeline secrets. It is explained <a href="AutheliaBlueprint#pipeline">here</a>.</p>
+        <p>But let's first focus on the .env. And if you want to move it to the pipeline it is all explained there.</p>
+        <p>Open the .env file with your favorite editor</p>
+        <code>
+            vim .env
+        </code>
+        <h2>Fill in all values except secrets</h2>
+        Every secret you see is generated by scripts. You dont't need to change them.
+        <h3>General</h3>
+        <pre>
+APP_NAME=YourAppName : Used to avoid nameconflics, added for example to container names
+DOCKER_VOLUME_PATH : where the app stores the docker volumes. Might be a good idea to not store in the repo folder.
+                Is usually already set after init.
+
+# example for https://<span style="color: red;">app</span>.<span style="color: green;">yourdomain</span>.<span style="color: blue;">com</span>
+- DOMAIN=<span style="color: green">yourdomain</span>
+- D_ENDING=<span style="color: blue;">com</span> : Domain ending
+
+- APP_SUBDOMAIN=<span style="color: red;">app</span> : Subdomain for your app -> https://app.yourdomain.com
+- AUTH_SUBDOMAIN=<span style="color: red;">auth</span> : Subdomain for authelia -> https://auth.yourdomain.com
+- LDAP_SUBDOMAIN=<span style="color: red;">ldap</span> : Subdomain for you ldap (user management) -> https://ldap.yourdomain.com
+
+- CALLBACK_PATH=home : The path where the frontend will redirect to after login (must fit exactly with that you program in the frontend)
+                        "home" is the default for all preconfigured frontends.
+                        So if you don't change the frontend callback path you can leave it on "home".
+            </pre>
+        <h3>Traefik</h3>
+        <pre>
+# mainly to avoid name conflicts
+# In case you already have a traefik container running you can change everything except the email to the running traefik instance you have.
+- TRAEFIK_NETWORK=YourTraefikNetwork
+- TRAEFIK_CERT_RESOLVER=YourCertResolver
+- TRAEFIK_ENTRYPOINT=YourHttpsEntryPoint
+- TRAEFIK_EMAIL=YourEmail@gmail.com</pre>
+        <h3>Authelia</h3>
+        <pre>
+- AUTHELIA_RESET_PASSWORD_SECRET=super-secret-password : **generated secret**
+- AUTHELIA_SESSION_REDIS_PASSWORD=redis-password : **generated secret**
+- AUTHELIA_SESSION_SECRET=super-secret-session : **generated secret**</pre>
+        <h3>LLDAP</h3>
+        <pre>
+- LLDAP_JWT_SECRET=super-secret-jwt : **generated secret**
+- LLDAP_KEY_SEED=super-secret-seed : **generated secret**
+- LLDAP_USERNAME=authelia : these are the credentials for the lldap user. You will need to add a user to lldap with these.
+- LLDAP_PASSWORD=secret-password : **generated secret**</pre>
+        <h3>Postgres (Authelia Storage)</h3>
+        <pre>
+- POSTGRES_PASSWORD=super-secret-password : **generated secret**
+- POSTGRES_ENCRYPTION_KEY=super-secret-encryption-key : **generated secret**</pre>
+        <h3>OIDC</h3>
+        <pre>
+# these can left on the default values. But you can change them if you want.
+- OIDC_HMAC_SECRET=super-secret-hmac : **generated secret**
+- OIDC_CLIENT_ID=your-client-id
+- OIDC_CLIENT_NAME=your-client-name</pre>
+        <h3>Database</h3>
+        <pre>
+# these can left on the default values. But you can change them if you want.
+- DB_ROOT_USERNAME=root
+- DB_ROOT_PASSWORD=root-password : **generated secret**
+- DB_USERNAME=db-username
+- DB_PASSWORD=db-password : **generated secret**</pre>
+
+        <h3>Mail SMTP</h3>
+        <pre>
+- SMTP_USERNAME=user
+- SMTP_PASSWORD=password : **generated secret**
+- SMTP_HOST=smtp://smtp.gmail.com:587 : don't forget to use protocol and port
+- SMTP_SENDER=mail@app.de
+
+# In case you selfhost your mailserver there might be some problems with the certs. Then you can experiment with these values.
+# When you have no problems leave them on false.
+- SMTP_DISABLE_REQUIRE_TLS=false
+- SMTP_DISABLE_STARTTLS=false
+- SMTP_SKIP_TLS_VERIFY=false</pre>
+        <h2>Rerun setup script to write template files</h2>
+        The configured variables need to be written to the configuration files from Authelia and the Database.
+        You do not need init anymore, because you already did that.
+        The secrets are filled in in your .env file.
+        <code>
+            sudo ./setup.sh
+        </code>
+        Any time you change the .env file you will need to rerun this script. You will probably need <strong>sudo</strong> because the docker container volumes are owned by root.
+        <h2>Start your services</h2>
+        There is a script for easier starting and stopping of the services.
+        <h3>Traefik</h3>
+        If you already have a traefik instance running you can skip this step.
+        Make sure you put in the correct names in the .env file.
+        <code>
+            ./docker-cli.sh up traefik
+        </code>
+        <fieldset>
+            <h4>In case of Error</h4>
+            You might get an error Message because the network Traefik wants to use does not exist like: "network YourTraefikNetwork declared as external, but could not be found"
+            you can react with creating the network:
+            <code>
+                docker network create YourTraefikNetwork
+            </code>
+        </fieldset>
+        <h3>Authelia and related stuff</h3>
+        <code>
+            ./docker-cli.sh up auth
+        </code>
+        <fieldset>
+            <h4>Necessary after the first startup</h4>
+            <p>On the first startup the lldap user that authelia wants to use will not exist. This will lead to the authelia container to be <strong>unhealthy and restarting</strong>.<br/>
+                So you will need to:
+            <ol>
+                <li>login to lldap on you <strong>ldap.youdomain.com</strong> (LDAP_SUBDOMAIN) and login with <strong>admin:password</strong> using you favourite browser.</li>
+                <li><strong>create the user</strong> you defined in your <strong>.env</strong> File. The secrets can be found in the variables: <strong>LLDAP_USERNAME</strong> and <strong>LLDAP_PASSWORD</strong>.</li>
+                <li>The user needs to have the <strong>group ldap_password_manager</strong> added after.</li>
+                <li>And of course change the admin password.</li>
+                For further information look into the <a href="https://github.com/lldap/lldap">lldap Repo</a>, very good project.</p>
+            </ol>
+        </fieldset>
+        <h3>Database</h3>
+        <code>
+            ./docker-cli.sh up db
+        </code>
+        <h3>Backend</h3>
+        <code>
+            ./docker-cli.sh up backend
+        </code>
+        <h3>Frontend</h3>
+        <code>
+            ./docker-cli.sh up frontend
+        </code>
+        <h3>Test if everything works</h3>
+        <p>You can visit app.youdomain.com</p>
+    </section>
+    <h1 id="localenv">Setup local environment</h1>
+    <hr>
+    <section>
+        The idea is that you will use the authelia instance from your server environment. This way you only need database, frontend and backend locally.
+        <h2>Clone your repository</h2>
+        <code>
+            git clone git@github.com:username/repo.git
+        </code>
+        <code>
+            cd my-repo
+        </code>
+        <h2>DB and Backend</h2>
+        For the database and backend it is planned to run them with docker locally. This makes spreading of environmentvariables easy.
+        The .env file you need for that is already provided.
+        If you rather dont't want to run the backend with docker it is usually not hard to provide the environment variables in another way.
+        You can lookup the needed ones in the docker-compose file: docker/composeFiles/local.docker-compose.yml
+        <h3>Configuration</h3>
+        <code>
+            cp .env.local .env
+        </code>
+        In this file you will need to change <strong>two values</strong>:
+        <pre>
+- AUTH_DOMAIN=auth.yourdomain.com
+- OIDC_CLIENT_ID=your-client-id</pre>
+        These need to have the same value as in the .env file on your server.
+        <h3>Starting the containers</h3>
+        <code>
+            chmod +x ./docker-cli.sh
+        </code>
+        <code>
+            ./docker-cli.sh up db local
+        </code>
+        <code>
+            ./docker-cli.sh up backend local
+        </code>
+        <h2>Frontend</h2>
+        Running the frontend locally in a docker container usually does not make sense. So you will need to run it with a classic approach like npm.
+        <h3>Configuration</h3>
+        The different frontend Frameworks treat their environment variable delivery differently.
+        But what stays the same is that you will need to change the <strong>AuthDomain</strong> and the <strong>OIDCClientId</strong>.
+        I will provide a short explanation for the different frontend technologies.
+        <h4>Angular</h4>
+        Change the values in frontend/src/environments/environment.ts
+        <h4>Vue</h4>
+        <code>
+            cp frontend/.env.example frontend/.env
+        </code>
+        Then change the values in frontend/.env
+        <h3>Start the application</h3>
+        Starting the applications also works different. For now all frontend technologies are npm based so the approach is the same.
+        <code>
+            cd frontend
+        </code>
+        <code>
+            npm install
+        </code>
+        <code>
+            npm run start
+        </code>
+    </section>
+    <h1 id="pipeline">Pipeline configuration</h1>
+    <hr>
+    <section>
+
+
+
+        Before you start with the configuration of a pipeline it is recommended to have the serverside setup done with a .env file first. This is explained <a href="AutheliaBlueprint#serverenv">here</a>.
+
+
+        The examples will be unspecific for the pipeline provider. But the general idea is the same.
+
+
+        You can find an <strong>example Github Actions pipeline</strong> <a href="https://github.com/LReg/AutheliaBlueprint/tree/main/.github/EXAMPLE-PIPELINE.yml">here</a>.
+
+
+        <h2>Responsibilities of the pipeline</h2>
+
+
+        <ul>
+
+
+            <li>Deliver <strong>environment variables</strong> in a secure way</li>
+
+
+            <li><strong>Write</strong> possible changes in these values to some <strong>configuration files</strong></li>
+
+
+            <li>Make a <strong>build</strong> on the server</li>
+
+
+            <li><strong>Restart</strong> the containers</li>
+
+
+        </ul>
+
+
+        <h2>Delivering Environment Variables</h2>
+
+
+        Given an <strong>SSH</strong> Connection to your technical user and <strong>environment variables set</strong> to the <strong>exact names of the ones in the .env file</strong>.<br/>
+
+
+        Then the Blueprint is designed to <strong>override</strong> the value you provided in the .env file with the environment variable.</br>
+
+
+        The Value will <strong>not be written in the .env file</strong> but only used for the current session.
+
+
+        <h2>Write configuration files</h2>
+
+
+        As mentioned in the <a href="AutheliaBlueprint#serverenv">server environment</a> changing the configuration values required to write amongst other the authelia configuration file.
+
+
+        To do so the ./setup.sh script needs to run with sudo.
+
+
+        <code>
+
+
+            sudo ./setup.sh
+
+
+        </code>
+
+
+        <h2>Make a build on the server</h2>
+
+
+        Now everything is prepared to make a build. You can use the ./docker-cli.sh script to do so.
+
+
+        <code>./docker-cli.sh build frontend</code>
+
+
+        <code>./docker-cli.sh build backend</code>
+
+
+        <h2>Restart the containers</h2>
+
+
+        Depending on the pipeline and changes you can now restart your containers. If there is no relevant change to the auth or traefik you can leave them out.
+
+
+        <code>./docker-cli.sh down auth</code>
+
+
+        <code>./docker-cli.sh down traefik</code>
+
+
+        <code>./docker-cli.sh down frontend</code>
+
+
+        <code>./docker-cli.sh down backend</code>
+
+
+        <code>./docker-cli.sh down db</code>
+
+
+        <code>./docker-cli.sh up auth</code>
+
+
+        <code>./docker-cli.sh up traefik</code>
+
+
+        <code>./docker-cli.sh up frontend</code>
+
+
+        <code>./docker-cli.sh up backend</code>
+
+
+        <code>./docker-cli.sh up db</code>
+
+
+        <h2>Special case: empty environment variables</h2>
+
+
+        If you hand over all environment variables as in the <a href="https://github.com/LReg/AutheliaBlueprint/tree/main/.github/EXAMPLE-PIPELINE.yml">Example Pipeline</a> then not setting a secret will lead to them being emtpy.
+
+
+        There is a script prepared to clear all empty variables.
+
+
+        <code>source ./docker/scripts/unsetEmptyVars.sh ./.env</code>
+
+
+        It needs to be called with source because it needs to change the environment variables of the current session.
+
+
+    </section>
+</main>
+<aside>
+    <a href="AutheliaBlueprint">Introduction</a>
+    <a href="AutheliaBlueprint#getstarted">Get Started</a>
+    <a href="AutheliaBlueprint#pre">Prerequisites</a>
+    <a href="AutheliaBlueprint#choosetech">Choose Technologies</a>
+    <a href="AutheliaBlueprint#serverenv">Setup server environment</a>
+    <a href="AutheliaBlueprint#localenv">Setup local environment</a>
+    <a href="AutheliaBlueprint#pipeline">Pipeline configuration</a>
+</aside>
+</body>
+</html>
