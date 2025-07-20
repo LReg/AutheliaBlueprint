@@ -78,11 +78,11 @@
         <h2>Copy the latest Release in your Repository</h2>
         <h3>Windows Powershell</h3>
         <code>
-            Invoke-WebRequest -Uri "https://github.com/LReg/AutheliaBlueprint/archive/refs/tags/0.0.12.zip" -OutFile "AutheliaBlueprint.zip"; Expand-Archive -Path "AutheliaBlueprint.zip" -DestinationPath "temp" -Force; Move-Item -Path "temp/*/*" -Destination "."; Remove-Item -Recurse -Force "temp"; Remove-Item "AutheliaBlueprint.zip"
+            Invoke-WebRequest -Uri "https://github.com/LReg/AutheliaBlueprint/archive/refs/tags/1.0.0.zip" -OutFile "AutheliaBlueprint.zip"; Expand-Archive -Path "AutheliaBlueprint.zip" -DestinationPath "temp" -Force; Move-Item -Path "temp/*/*" -Destination "."; Remove-Item -Recurse -Force "temp"; Remove-Item "AutheliaBlueprint.zip"
         </code>
         <h3>Unix (with curl)</h3>
         <code>
-            curl -L -o AutheliaBlueprint.zip https://github.com/LReg/AutheliaBlueprint/archive/refs/tags/0.0.12.zip && unzip AutheliaBlueprint.zip -d temp && shopt -s dotglob && mv temp/*/* ./ && rm -r temp AutheliaBlueprint.zip
+            curl -L -o AutheliaBlueprint.zip https://github.com/LReg/AutheliaBlueprint/archive/refs/tags/1.0.0.zip && unzip AutheliaBlueprint.zip -d temp && shopt -s dotglob && mv temp/*/* ./ && rm -r temp AutheliaBlueprint.zip
         </code>
         <h2>Give execution rights to script</h2>
         <code>
