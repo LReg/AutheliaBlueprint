@@ -42,7 +42,7 @@ services:
       - 'traefik.http.services.${APP_NAME}-service.loadbalancer.server.port=17170'
     volumes:
       - "${DOCKER_VOLUME_PATH}/volumes/lldap:/data"
-    environment:
+      - "LLDAP_LDAP_USER_PASS=${LLDAP_ADMIN_PASS}"
       - "LLDAP_JWT_SECRET=${LLDAP_JWT_SECRET}"
       - "LLDAP_KEY_SEED=${LLDAP_KEY_SEED}"
       - "LLDAP_LDAP_BASE_DN=dc=${DOMAIN},dc=${D_ENDING}"

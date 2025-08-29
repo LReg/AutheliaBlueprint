@@ -78,11 +78,11 @@
         <h2>Copy the latest Release in your Repository</h2>
         <h3>Windows Powershell</h3>
         <code>
-            Invoke-WebRequest -Uri "https://github.com/LReg/AutheliaBlueprint/archive/refs/tags/1.0.0.zip" -OutFile "AutheliaBlueprint.zip"; Expand-Archive -Path "AutheliaBlueprint.zip" -DestinationPath "temp" -Force; Move-Item -Path "temp/*/*" -Destination "."; Remove-Item -Recurse -Force "temp"; Remove-Item "AutheliaBlueprint.zip"
+            Invoke-WebRequest -Uri "https://github.com/LReg/AutheliaBlueprint/archive/refs/tags/1.0.1.zip" -OutFile "AutheliaBlueprint.zip"; Expand-Archive -Path "AutheliaBlueprint.zip" -DestinationPath "temp" -Force; Move-Item -Path "temp/*/*" -Destination "."; Remove-Item -Recurse -Force "temp"; Remove-Item "AutheliaBlueprint.zip"
         </code>
         <h3>Unix (with curl)</h3>
         <code>
-            curl -L -o AutheliaBlueprint.zip https://github.com/LReg/AutheliaBlueprint/archive/refs/tags/1.0.0.zip && unzip AutheliaBlueprint.zip -d temp && shopt -s dotglob && mv temp/*/* ./ && rm -r temp AutheliaBlueprint.zip
+            curl -L -o AutheliaBlueprint.zip https://github.com/LReg/AutheliaBlueprint/archive/refs/tags/1.0.1.zip && unzip AutheliaBlueprint.zip -d temp && shopt -s dotglob && mv temp/*/* ./ && rm -r temp AutheliaBlueprint.zip
         </code>
         <h2>Give execution rights to script</h2>
         <code>
@@ -203,6 +203,7 @@ DOCKER_VOLUME_PATH : where the app stores the docker volumes. Might be a good id
         <pre>
 - LLDAP_JWT_SECRET=super-secret-jwt : **generated secret**
 - LLDAP_KEY_SEED=super-secret-seed : **generated secret**
+- LLDAP_ADMIN_PASS=super-secret-seed : **generated secret**
 - LLDAP_USERNAME=authelia : these are the credentials for the lldap user. You will need to add a user to lldap with these.
 - LLDAP_PASSWORD=secret-password : **generated secret**</pre>
         <h3>Postgres (Authelia Storage)</h3>
@@ -268,7 +269,8 @@ DOCKER_VOLUME_PATH : where the app stores the docker volumes. Might be a good id
             <p>On the first startup the lldap user that authelia wants to use will not exist. This will lead to the authelia container to be <strong>unhealthy and restarting</strong>.<br/>
                 So you will need to:
             <ol>
-                <li>login to lldap on you <strong>ldap.youdomain.com</strong> (LDAP_SUBDOMAIN) and login with <strong>admin:password</strong> using you favourite browser.</li>
+                <li>Look up the LLDAP_ADMIN_PASS from your .env file</li>
+                <li>login to lldap on you <strong>ldap.youdomain.com</strong> (LDAP_SUBDOMAIN) and login with <strong>admin:[LLDAP_ADMIN_PASS]</LLDAP_ADMIN_PASS></strong> using you favourite browser.</li>
                 <li><strong>create the user</strong> you defined in your <strong>.env</strong> File. The secrets can be found in the variables: <strong>LLDAP_USERNAME</strong> and <strong>LLDAP_PASSWORD</strong>.</li>
                 <li>The user needs to have the <strong>group ldap_password_manager</strong> added after.</li>
                 <li>And of course change the admin password.</li>
